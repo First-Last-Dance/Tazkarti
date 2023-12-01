@@ -8,7 +8,7 @@ import { AuthProvider } from "./contexts/Authentication";
 
 import "./App.css";
 function App() {
-  useDocumentTitle("sandiego dealership");
+  useDocumentTitle("Tazkarti");
   return (
     <ThemeProvider theme={theme}>
       <AuthProvider>

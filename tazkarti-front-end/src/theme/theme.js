@@ -4,24 +4,17 @@ import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 const theme = responsiveFontSizes(
   createTheme({
     palette: {
-      // mode: "dark",
-      primary: {
-        // Orange
-        main: "#026773",
-        light: "#012E40",
-        contrastText: "#fff",
+      blue: {
+        main: "#262440",
+        light: "#278DA2",
       },
-      secondary: {
-        // Blue
-        main: "#3CA6A6",
-        light: "#3CA6A6",
-        dark: "#4A7B93",
+      gray: {
+        main: "#545070",
+        light: "#F2ECFF",
       },
-      tertiary: {
-        // grey
-        main: "#497A93",
-        light: "#F9FBFC",
-        second: "#E9F1F5",
+      green: {
+        main: "#00C897",
+        light: "#C8FCEA",
       },
       red: {
         main: "#A62D43",
@@ -43,6 +36,7 @@ const theme = responsiveFontSizes(
     typography: {
       fontSize: 12,
     },
+    
   })
 );
 
