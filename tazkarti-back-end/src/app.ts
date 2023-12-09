@@ -62,11 +62,7 @@ app.use('/', routes);
 // Connect to DB
 
 mongoose
-  .connect(
-    'mongodb://' + (process.env.DB_Host as string) ||
-      'localhost:27017' + '/Tazkarti',
-    { dbName: 'Tazkarti' },
-  )
+  .connect('mongodb://0.0.0.0:27017/Tazkarti')
   .then(() => {
     console.log(`DB connected`);
     // Start the API
@@ -76,3 +72,12 @@ mongoose
     });
   })
   .catch((err) => console.log(err));
+
+// mongoose
+//   .connect('mongodb://0.0.0.0:27017/Tazkarti')
+//   .then(() => {
+//     console.log('Connected to MongoDB');
+//   })
+//   .catch((err) => {
+//     console.error('Error connecting to MongoDB:', err);
+//   });

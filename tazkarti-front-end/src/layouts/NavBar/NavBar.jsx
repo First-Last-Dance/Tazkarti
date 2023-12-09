@@ -174,13 +174,27 @@ function NavBar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {false &&
+                {auth.isLoggedIn() &&
                   settingsLoggedIn.map((setting) => (
                     <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center">{setting}</Typography>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => {
+                          if (setting == "Logout") {
+                            auth.logout();
+                            navigate("/login");
+                          } else {
+                            navigate(
+                              "/" + setting.replace(" ", "").toLowerCase()
+                            );
+                          }
+                        }}
+                      >
+                        {setting}
+                      </Typography>
                     </MenuItem>
                   ))}
-                {true &&
+                {!auth.isLoggedIn() &&
                   settingsLoggedout.map((setting) => (
                     <MenuItem key={setting} onClick={handleCloseUserMenu}>
                       <Typography

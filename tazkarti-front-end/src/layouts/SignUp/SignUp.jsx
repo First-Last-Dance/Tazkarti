@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import TextField from "../../components/TextField/TextField";
 import { Container, Splitter, Header, MyButton, Change } from "./SignUp.styled";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MyDatePicker from "../../components/DatePicker/DatePicker";
 
 import dayjs from "dayjs";
@@ -8,6 +9,9 @@ import Gender from "../../components/Gender/Gender";
 import DropDown from "../../components/DropDown/DropDown";
 
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/Authentication";
+import useFetchFunction from "../../hooks/useFetchFunction";
+import { signUp } from "../../services/auth";
 
 const egyptGovernorates = [
   "alexandria",
@@ -44,12 +48,36 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [date, setDate] = useState(dayjs("2022-04-17"));
+  const [date, setDate] = useState("2022-04-17");
   const [gender, setGender] = useState("male");
   const [city, setCity] = useState(egyptGovernorates[5]);
   const [address, setAddress] = useState("");
 
   const navigate = useNavigate();
+  const auth = useAuth();
+
+  const [data, error, isLoading, dataFetch] = useFetchFunction();
+
+  const handleSubmit = () => {
+    signUp(dataFetch, {
+      userName: userName,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+      birthDate: date,
+      gender: gender,
+      city: city,
+      email: email,
+      role: "fan",
+    });
+  };
+
+  useEffect(() => {
+    if (data && data.token) {
+      auth.login({ username: userName, token: data.token });
+      navigate("/");
+    }
+  }, [data]);
 
   return (
     <Container>
@@ -109,7 +137,7 @@ const SignUp = () => {
           isSplitted={true}
         />
       </Splitter>
-      <MyButton>Sign Up</MyButton>
+      <MyButton onClick={handleSubmit}>Sign Up</MyButton>
       <Change>
         Have Acount ?{" "}
         <span

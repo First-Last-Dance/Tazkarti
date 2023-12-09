@@ -1,7 +1,6 @@
-/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
 import { createContext, useContext } from "react";
-// import AddMinutes from "../Utils/AddMinutes";
+
 
 import useLocalStorage from "./useLocalStorage";
 
@@ -23,8 +22,10 @@ const AuthProvider = ({ children }) => {
    * stringified version of the user object.
    * @param user - The user object that is returned from the login function.
    */
-  const login = async (user) => {
-    setUser(JSON.stringify(user));
+  const login = async (newUser) => {
+    // Calculate token's expiration date
+    // user.expiresIn = AddMinutes(new Date(), user.expiresIn / 60);
+    setUser(JSON.stringify(newUser));
   };
 
   // Handle logout
@@ -33,10 +34,19 @@ const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  // Return user's username
+  const getUserName = () => {
+    return JSON.parse(user).username;
+  };
 
   // Return user's token
   const getToken = () => {
-    return JSON.parse(user).access_token;
+    return JSON.parse(user).token;
+  };
+
+  // Return token's expiration date
+  const getExpirationDate = () => {
+    return JSON.parse(user).expiresIn;
   };
 
   // Is user logged in?
@@ -46,11 +56,14 @@ const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        user,
+        //user,
         login,
         logout,
         getToken,
+        getUserName,
+        getExpirationDate,
         isLoggedIn,
+        //getFullName,
       }}
     >
       {children}
@@ -58,16 +71,9 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-/**
- * It returns the value of the AuthContext object.
- * @returns The AuthContext object.
- */
+
 const useAuth = () => {
-  const contextVal = useContext(AuthContext);
-  if (contextVal === undefined) {
-    throw new Error("usePartners must be used within a PartnersProvider");
-  }
-  return contextVal;
+  return useContext(AuthContext);
 };
 
 export { useAuth, AuthProvider };
