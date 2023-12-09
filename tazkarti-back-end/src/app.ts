@@ -41,6 +41,7 @@ mongoose
   .connect(
     'mongodb://' + (process.env.DB_Host as string) ||
       'localhost:27017' + '/Tazkarti',
+    { dbName: 'Tazkarti' },
   )
   .then(() => {
     console.log(`DB connected`);
