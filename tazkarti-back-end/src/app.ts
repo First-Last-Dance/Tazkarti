@@ -62,7 +62,11 @@ app.use('/', routes);
 // Connect to DB
 
 mongoose
-  .connect('mongodb://0.0.0.0:27017/Tazkarti')
+  .connect(
+    'mongodb://' + (process.env.DB_Host as string) ||
+      '0.0.0.0:27017' + '/Tazkarti',
+    { dbName: 'Tazkarti' },
+  )
   .then(() => {
     console.log(`DB connected`);
     // Start the API
