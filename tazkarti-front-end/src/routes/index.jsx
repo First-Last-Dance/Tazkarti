@@ -4,6 +4,7 @@ import Home from "../pages/Home/Home";
 import SignUpPage from "../pages/SignUpPage/SignUpPage";
 import LogInPage from "../pages/LogInPage/LogInPage";
 import MatchReserve from "../pages/MatchReserve/MatchReserve";
+import AllMatches from "../pages/AllMatches/AllMatches";
 
 const router = createBrowserRouter([
   {
@@ -23,8 +24,12 @@ const router = createBrowserRouter([
         element: <LogInPage />,
       },
       {
-        path: "match-reserve",
+        path: "buy-ticket/:id",
         element: <MatchReserve />,
+      },
+      {
+        path: "matches",
+        element: <AllMatches />,
       },
     ],
   },
