@@ -4,6 +4,7 @@ import routes from './router';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
 import mongoose from 'mongoose';
+import cors from 'cors';
 
 // Config the .env file
 dotenv.config();
@@ -11,6 +12,29 @@ dotenv.config();
 // Create the API
 const app = express();
 const port = process.env.PORT || 8080;
+
+//add cors
+// app.use(cors());
+// We set the CORS origin to * so that we don't need to
+// worry about the complexities of CORS.
+app.use(
+  cors({
+    allowedHeaders: [
+      'Origin',
+      'X-Requested-With',
+      'Content-Type',
+      'Accept',
+      'X-Access-Token',
+      'Authorization',
+      'Access-Control-Allow-Origin',
+      'Access-Control-Allow-Headers',
+      'Access-Control-Allow-Methods',
+    ],
+    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+    preflightContinue: true,
+    origin: '*',
+  }),
+);
 
 // Swagger Docs.
 const options = {
