@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-key */
 import stad from "../../assets/images/stad.png";
 import ChairIcon from "@mui/icons-material/Chair";
 
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 import { Container, Stad, Seats, Seat } from "./MatchReserve.styled";
 
@@ -32,6 +34,10 @@ const seats = [
 ];
 
 const MatchReserve = () => {
+  const { id } = useParams();
+
+  console.log("Match id:", id);
+
   const [rows, setRows] = useState(5);
   const [cols, setCols] = useState(5); // Number of seats per row
 
@@ -40,7 +46,7 @@ const MatchReserve = () => {
       {seats.map((rowSeats, row) => (
         <Seats key={row}>
           {rowSeats.map((seat, col) => (
-            <Seat notSelected = {seat.userName == ""}>
+            <Seat notSelected={seat.userName == ""}>
               <ChairIcon />
             </Seat>
           ))}
