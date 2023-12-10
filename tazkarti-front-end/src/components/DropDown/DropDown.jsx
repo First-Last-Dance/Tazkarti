@@ -14,6 +14,7 @@ const DropDown = ({
   placeHolder,
   isSplitted,
   color = "light",
+  disabled = false,
 }) => {
   const handleValueChange = (event, newValue) => {
     if (newValue === "") {
@@ -35,10 +36,12 @@ const DropDown = ({
         onChange={handleValueChange}
         sx={{ paddingX: 0, paddingY: 0 }}
         disableClearable={true}
+        disabled={disabled}
         renderInput={(params) => (
           <MyTextField
             isSplitted={isSplitted}
             placeholder={placeHolder}
+            disabled={disabled}
             {...params}
             // label={label}
           />

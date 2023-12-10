@@ -1,15 +1,37 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 import TextField from "../../components/TextField/TextField";
 import { Change, Container, Header, MyButton } from "./LogIn.styled";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/Authentication";
+import useFetchFunction from "../../hooks/useFetchFunction";
+import { logIn } from "../../services/auth";
 
 const LogIn = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+
+  const auth = useAuth();
+
+  const [data, error, isLoading, dataFetch] = useFetchFunction();
+
+  const handleSubmit = () => {
+    logIn(dataFetch, {
+      userName: userName,
+      password: password,
+    });
+  };
+
+  useEffect(() => {
+    if (data && data.token) {
+      auth.login({ username: userName, token: data.token });
+      navigate("/");
+    }
+  }, [data]);
 
   return (
     <Container>
@@ -28,7 +50,7 @@ const LogIn = () => {
         setValue={setPassword}
       />
 
-      <MyButton>Log In</MyButton>
+      <MyButton onClick={handleSubmit}>Log In</MyButton>
       <Change>
         Don't Have Acount ?{" "}
         <span

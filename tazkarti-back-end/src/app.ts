@@ -76,3 +76,12 @@ mongoose
     });
   })
   .catch((err) => console.log(err));
+
+// mongoose
+//   .connect('mongodb://0.0.0.0:27017/Tazkarti')
+//   .then(() => {
+//     console.log('Connected to MongoDB');
+//   })
+//   .catch((err) => {
+//     console.error('Error connecting to MongoDB:', err);
+//   });

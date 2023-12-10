@@ -11,8 +11,8 @@ import { useAuth } from "./Authentication";
 const RequireAuth = ({ children }) => {
   const auth = useAuth();
 
-  if (!auth.isLoggedIn() ) {
-    return <Navigate to="/admin/login"></Navigate>;
+  if (!auth.isLoggedIn()) {
+    return <Navigate to="/login"></Navigate>;
   }
   return children;
 };

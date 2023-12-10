@@ -1,4 +1,3 @@
-/* eslint-disable no-empty */
 import { useState } from "react";
 
 /**
@@ -25,7 +24,9 @@ const useLocalStorage = (keyName, defaultValue) => {
   const setValue = (newValue) => {
     try {
       window.localStorage.setItem(keyName, newValue);
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
     setStoredValue(newValue);
   };
   return [storedValue, setValue];

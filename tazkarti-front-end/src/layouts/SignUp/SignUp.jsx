@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import TextField from "../../components/TextField/TextField";
 import { Container, Splitter, Header, MyButton, Change } from "./SignUp.styled";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MyDatePicker from "../../components/DatePicker/DatePicker";
 
 import dayjs from "dayjs";
@@ -8,35 +9,11 @@ import Gender from "../../components/Gender/Gender";
 import DropDown from "../../components/DropDown/DropDown";
 
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/Authentication";
+import useFetchFunction from "../../hooks/useFetchFunction";
+import { signUp } from "../../services/auth";
 
-const egyptGovernorates = [
-  "alexandria",
-  "aswan",
-  "asyut",
-  "beheira",
-  "beni suef",
-  "cairo",
-  "dakahlia",
-  "damietta",
-  "faiyum",
-  "gharbeya",
-  "giza",
-  "ismailia",
-  "kafr el-sheikh",
-  "luxor",
-  "matrouh",
-  "minya",
-  "monufia",
-  "new valley",
-  "north sinai",
-  "port said",
-  "qalyubia",
-  "qena",
-  "red sea",
-  "sohag",
-  "south sinai",
-  "suez",
-];
+import { egyptGovernorates } from "../../constants";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -50,6 +27,30 @@ const SignUp = () => {
   const [address, setAddress] = useState("");
 
   const navigate = useNavigate();
+  const auth = useAuth();
+
+  const [data, error, isLoading, dataFetch] = useFetchFunction();
+
+  const handleSubmit = () => {
+    signUp(dataFetch, {
+      userName: userName,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+      birthDate: date,
+      gender: gender,
+      city: city,
+      email: email,
+      role: "fan",
+    });
+  };
+
+  useEffect(() => {
+    if (data && data.token) {
+      auth.login({ username: userName, token: data.token });
+      navigate("/");
+    }
+  }, [data]);
 
   return (
     <Container>
@@ -109,7 +110,7 @@ const SignUp = () => {
           isSplitted={true}
         />
       </Splitter>
-      <MyButton>Sign Up</MyButton>
+      <MyButton onClick={handleSubmit}>Sign Up</MyButton>
       <Change>
         Have Acount ?{" "}
         <span
