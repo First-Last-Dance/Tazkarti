@@ -432,7 +432,7 @@ userRoutes.post('/authorize', requireAuth, requireAdmin, async (req, res) => {
 
 /**
  * @swagger
- * /user/:
+ * /user:
  *  delete:
  *      summary: delete a user (only admin)
  *      tags: [Admin]
@@ -478,7 +478,7 @@ userRoutes.delete('/', requireAuth, requireAdmin, async (req, res) => {
 
 /**
  * @swagger
- * /user/:
+ * /user:
  *  patch:
  *      summary: update a user
  *      tags: [User]
