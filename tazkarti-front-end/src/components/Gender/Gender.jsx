@@ -5,7 +5,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 
-const Gender = ({ value, setValue }) => {
+const Gender = ({ value, setValue, disabled }) => {
   const handleChange = (event) => {
     setValue(event.target.value);
   };
@@ -18,9 +18,18 @@ const Gender = ({ value, setValue }) => {
         name="controlled-radio-buttons-group"
         value={value}
         onChange={handleChange}
+        disabled={disabled}
       >
-        <FormControlLabel value="female" control={<Radio />} label="Female" />
-        <FormControlLabel value="male" control={<Radio />} label="Male" />
+        <FormControlLabel
+          value="female"
+          control={<Radio disabled={disabled} />}
+          label="Female"
+        />
+        <FormControlLabel
+          value="male"
+          control={<Radio disabled={disabled} />}
+          label="Male"
+        />
       </RadioGroup>
     </FormControl>
   );

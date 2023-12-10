@@ -13,34 +13,7 @@ import { useAuth } from "../../contexts/Authentication";
 import useFetchFunction from "../../hooks/useFetchFunction";
 import { signUp } from "../../services/auth";
 
-const egyptGovernorates = [
-  "alexandria",
-  "aswan",
-  "asyut",
-  "beheira",
-  "beni suef",
-  "cairo",
-  "dakahlia",
-  "damietta",
-  "faiyum",
-  "gharbeya",
-  "giza",
-  "ismailia",
-  "kafr el-sheikh",
-  "luxor",
-  "matrouh",
-  "minya",
-  "monufia",
-  "new valley",
-  "north sinai",
-  "port said",
-  "qalyubia",
-  "qena",
-  "red sea",
-  "sohag",
-  "south sinai",
-  "suez",
-];
+import { egyptGovernorates } from "../../constants";
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
@@ -48,7 +21,7 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [date, setDate] = useState("2022-04-17");
+  const [date, setDate] = useState(dayjs("2022-04-17"));
   const [gender, setGender] = useState("male");
   const [city, setCity] = useState(egyptGovernorates[5]);
   const [address, setAddress] = useState("");

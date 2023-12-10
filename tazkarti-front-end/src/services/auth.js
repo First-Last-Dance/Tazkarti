@@ -42,4 +42,19 @@ const logIn = (fetchData, objectData) => {
   }
 };
 
-export { signUp, logIn };
+const getUserData = (fetchData, auth) => {
+  if (!auth || !auth.isLoggedIn() || !auth.getToken()) return;
+  fetchData({
+    axiosInstance: axios,
+    method: "get",
+    url: "/user",
+    requestConfig: {
+      headers: {
+        "Content-Language": "en-US",
+        authorization: `Bearer ${auth.getToken()}`,
+      },
+    },
+  });
+};
+
+export { signUp, logIn, getUserData };

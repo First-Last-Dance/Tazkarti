@@ -15,7 +15,7 @@ const AuthContext = createContext(null);
  */
 const AuthProvider = ({ children }) => {
   // Local storage for user information
-  const [user, setUser] = useLocalStorage("user", "null");
+  const [user, setUser] = useLocalStorage("tazkarit", "null");
 
   /**
    * The login function takes a user object as an argument, and then sets the user state to the
@@ -31,7 +31,8 @@ const AuthProvider = ({ children }) => {
   // Handle logout
   const logout = () => {
     localStorage.clear();
-    setUser(null);
+    console.log("Entering logout")
+    setUser(undefined);
   };
 
   // Return user's username
@@ -51,7 +52,7 @@ const AuthProvider = ({ children }) => {
 
   // Is user logged in?
   const isLoggedIn = () => {
-    return user !== "null";
+    return user !== undefined;
   };
   return (
     <AuthContext.Provider

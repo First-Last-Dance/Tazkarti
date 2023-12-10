@@ -11,6 +11,7 @@ const TextField = ({
   right,
   number,
   color = "light",
+  disabled = false,
 }) => {
   const handleValueChange = (event) => {
     if (number) {
@@ -36,6 +37,7 @@ const TextField = ({
         placeholder={placeHolder}
         value={value ? value : ""}
         onChange={handleValueChange}
+        disabled={disabled}
       />
     </Container>
   );

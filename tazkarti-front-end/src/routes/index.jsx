@@ -5,6 +5,9 @@ import SignUpPage from "../pages/SignUpPage/SignUpPage";
 import LogInPage from "../pages/LogInPage/LogInPage";
 import MatchReserve from "../pages/MatchReserve/MatchReserve";
 import AllMatches from "../pages/AllMatches/AllMatches";
+import ProfilePage from "../pages/ProfilePage/ProfilePage";
+
+import RequireAuth from "../contexts/RequireAuth";
 
 const router = createBrowserRouter([
   {
@@ -25,11 +28,23 @@ const router = createBrowserRouter([
       },
       {
         path: "buy-ticket/:id",
-        element: <MatchReserve />,
+        element: (
+          <RequireAuth>
+            <MatchReserve />
+          </RequireAuth>
+        ),
       },
       {
         path: "matches",
         element: <AllMatches />,
+      },
+      {
+        path: "profile",
+        element: (
+          <RequireAuth>
+            <ProfilePage />
+          </RequireAuth>
+        ),
       },
     ],
   },
