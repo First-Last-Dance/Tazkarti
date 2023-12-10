@@ -80,11 +80,68 @@ export async function isAdmin(userName: string): Promise<boolean> {
   }
 }
 
-export async function authorize(userName: string): Promise<boolean> {
+export async function authorize(userName: string): Promise<void> {
+  const available = await checkAvailableUserName(userName);
+  if (available) {
+    throw 'user not found';
+  }
   await User.updateOne({ userName: userName }, { authorized: true }).catch(
     (err) => {
       throw err;
     },
   );
-  return true;
+}
+
+export async function deleteUser(userName: string): Promise<void> {
+  const available = await checkAvailableUserName(userName);
+  if (available) {
+    throw 'user not found';
+  }
+  await User.deleteOne({ userName: userName }).catch((err) => {
+    throw err;
+  });
+}
+
+export async function updateUser(
+  userName: string,
+  firstName?: string,
+  lastName?: string,
+  birthDate?: Date,
+  gender?: string,
+  city?: string,
+  address?: string,
+): Promise<void> {
+  let newData: UserData = {};
+  if (firstName != undefined) {
+    newData.firstName = firstName;
+  }
+  if (lastName != undefined) {
+    newData.lastName = lastName;
+  }
+  if (birthDate != undefined) {
+    newData.birthDate = birthDate;
+  }
+  if (gender != undefined) {
+    newData.gender = gender;
+  }
+  if (city != undefined) {
+    newData.city = city;
+  }
+  if (address != undefined) {
+    newData.address = address;
+  }
+  await User.updateOne({ userName: userName }, newData).catch((err) => {
+    throw err;
+  });
+}
+
+export async function updatePassword(
+  userName: string,
+  newPassword: string,
+): Promise<void> {
+  await User.updateOne({ userName: userName }, { password: newPassword }).catch(
+    (err) => {
+      throw err;
+    },
+  );
 }

@@ -57,6 +57,60 @@ const userRoutes = express.Router();
 /**
  * @swagger
  *   components:
+ *      securitySchemes:
+ *          bearerAuth:
+ *              type: http
+ *              scheme: bearer
+ *              bearerFormat: JWT
+ */
+/**
+ * @swagger
+ *   components:
+ *           userEditSchema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 required: true
+ *               firstName:
+ *                 type: string
+ *                 required: true
+ *               lastName:
+ *                 type: string
+ *                 required: true
+ *               birthDate:
+ *                 type: string
+ *                 required: true
+ *                 describtion: Must be of a valid format like "YYYY-MM-DD"
+ *               gender:
+ *                 type: string
+ *                 required: true
+ *                 describtion: must be male or female
+ *               city:
+ *                 type: string
+ *                 required: true
+ *               address:
+ *                 type: string
+ *                 required: false
+ */
+
+/**
+ * @swagger
+ *   components:
+ *           userChangePasswordSchema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 required: true
+ *               newPassword:
+ *                 type: string
+ *                 required: true
+ */
+
+/**
+ * @swagger
+ *   components:
  *           userSchema:
  *             type: object
  *             properties:
@@ -152,7 +206,7 @@ userRoutes.get('/', requireAuth, async (req, res) => {
       res.status(200).send(user);
     })
     .catch((err) => {
-      res.status(500).send({ auth: false, message: err });
+      res.status(500).send(err);
     });
 });
 
@@ -248,17 +302,17 @@ userRoutes.post('/signUp', async (req, res) => {
     })
     .catch((err) => {
       if (err == 'user already exists') {
-        res.status(400).send({ auth: false, message: 'User already exists' });
+        res.status(400).send('User already exists');
       } else if (err == 'invalid email') {
-        res.status(400).send({ auth: false, message: 'invalid email' });
+        res.status(400).send('invalid email');
       } else if (err == 'invalid birthDate') {
-        res.status(400).send({ auth: false, message: 'invalid birthDate' });
+        res.status(400).send('invalid birthDate');
       } else if (err == 'invalid gender') {
-        res.status(400).send({ auth: false, message: 'invalid gender' });
+        res.status(400).send('invalid gender');
       } else if (err == 'invalid role') {
-        res.status(400).send({ auth: false, message: 'invalid role' });
+        res.status(400).send('invalid role');
       } else {
-        res.status(500).send({ auth: false, message: err });
+        res.status(500).send(err);
       }
     });
 });
@@ -310,14 +364,10 @@ userRoutes.post('/signUp', async (req, res) => {
  */
 userRoutes.post('/signIn', async (req, res) => {
   if (!req.body.userName) {
-    return res
-      .status(400)
-      .send({ auth: false, message: 'userName is required' });
+    return res.status(400).send('userName is required');
   }
   if (!req.body.password) {
-    return res
-      .status(400)
-      .send({ auth: false, message: 'Password is required' });
+    return res.status(400).send('Password is required');
   }
   await User.signIn(req.body.userName, req.body.password)
     .then((jwt) => {
@@ -325,11 +375,11 @@ userRoutes.post('/signIn', async (req, res) => {
     })
     .catch((err) => {
       if (err == 'user not found') {
-        res.status(401).send({ auth: false, message: 'user not found' });
+        res.status(401).send('user not found');
       } else if (err == 'invalid password') {
-        res.status(401).send({ auth: false, message: 'invalid password' });
+        res.status(401).send('invalid password');
       } else {
-        res.status(500).send({ auth: false, message: err });
+        res.status(500).send(err);
       }
     });
 });
@@ -338,8 +388,8 @@ userRoutes.post('/signIn', async (req, res) => {
  * @swagger
  * /user/authorize:
  *  post:
- *      summary: authorize a user
- *      tags: [User]
+ *      summary: authorize a user (only admin)
+ *      tags: [Admin]
  *      security:
  *           - bearerAuth: []
  *      requestBody:
@@ -373,11 +423,160 @@ userRoutes.post('/authorize', requireAuth, requireAdmin, async (req, res) => {
     })
     .catch((err) => {
       if (err == 'user not found') {
-        res.status(400).send({ auth: false, message: 'user not found' });
-      } else if (err == 'invalid password') {
-        res.status(400).send({ auth: false, message: 'user must be manager' });
+        res.status(400).send('user not found');
       } else {
-        res.status(500).send({ auth: false, message: err });
+        res.status(500).send(err);
+      }
+    });
+});
+
+/**
+ * @swagger
+ * /user/:
+ *  delete:
+ *      summary: delete a user (only admin)
+ *      tags: [Admin]
+ *      security:
+ *           - bearerAuth: []
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          userName:
+ *                              type: string
+ *                              required: true
+ *                  example:
+ *                      userName: Amr49
+ *      responses:
+ *          200:
+ *              $ref: '#/components/responses/Ok'
+ *          400:
+ *              $ref: '#/components/responses/BadRequest'
+ *          401:
+ *              $ref: '#/components/responses/UnauthorizedError'
+ *          500:
+ *              $ref: '#/components/responses/ServerError'
+ */
+userRoutes.delete('/', requireAuth, requireAdmin, async (req, res) => {
+  if (!req.body.userName) {
+    return res.status(400).send('userName to be deleted is required');
+  }
+  await User.deleteUser(req.body.userName)
+    .then(() => {
+      res.status(200).send('ok');
+    })
+    .catch((err) => {
+      if (err == 'user not found') {
+        res.status(400).send('user not found');
+      } else {
+        res.status(500).send(err);
+      }
+    });
+});
+
+/**
+ * @swagger
+ * /user/:
+ *  patch:
+ *      summary: update a user
+ *      tags: [User]
+ *      security:
+ *           - bearerAuth: []
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                     $ref: '#/components/userEditSchema'
+ *                  example:
+ *                    firstName: Amr
+ *                    lastName: Ahmed
+ *                    birthDate: 2001-03-11
+ *                    gender: male
+ *                    city: cairo
+ *                    address: cairo, second floor :)
+ *      responses:
+ *          200:
+ *              $ref: '#/components/responses/Ok'
+ *          400:
+ *              $ref: '#/components/responses/BadRequest'
+ *          401:
+ *              $ref: '#/components/responses/UnauthorizedError'
+ *          500:
+ *              $ref: '#/components/responses/ServerError'
+ */
+userRoutes.patch('/', requireAuth, async (req, res) => {
+  await User.updateUser(
+    res.locals.userName,
+    req.body.firstName,
+    req.body.lastName,
+    req.body.birthDate,
+    req.body.gender,
+    req.body.city,
+    req.body.address,
+  )
+    .then(() => {
+      res.status(200).send('ok');
+    })
+    .catch((err) => {
+      if (err == 'invalid birthDate') {
+        res.status(400).send('invalid birthDate');
+      } else if (err == 'invalid gender') {
+        res.status(400).send('invalid gender');
+      } else {
+        res.status(500).send(err);
+      }
+    });
+});
+
+/**
+ * @swagger
+ * /user/changePassword:
+ *  patch:
+ *      summary: change a user's password
+ *      tags: [User]
+ *      security:
+ *           - bearerAuth: []
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                     $ref: '#/components/userChangePasswordSchema'
+ *                  example:
+ *                    password: a123456789
+ *                    newPassword: b123456789
+ *      responses:
+ *          200:
+ *              $ref: '#/components/responses/Ok'
+ *          400:
+ *              $ref: '#/components/responses/BadRequest'
+ *          401:
+ *              $ref: '#/components/responses/UnauthorizedError'
+ *          500:
+ *              $ref: '#/components/responses/ServerError'
+ */
+
+userRoutes.patch('/changePassword', requireAuth, async (req, res) => {
+  if (!req.body.password) {
+    return res.status(400).send('Password is required');
+  }
+  if (!req.body.newPassword) {
+    return res.status(400).send('New password is required');
+  }
+  await User.updatePassword(
+    res.locals.userName,
+    req.body.password,
+    req.body.newPassword,
+  )
+    .then(() => {
+      res.status(200).send('ok');
+    })
+    .catch((err) => {
+      if (err == 'invalid password') {
+        res.status(400).send('invalid password');
+      } else {
+        res.status(500).send(err);
       }
     });
 });

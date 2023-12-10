@@ -2,18 +2,18 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 export interface UserData {
-  userName: string;
-  password: string;
-  firstName: string;
-  lastName: String;
-  birthDate: Date;
-  gender: String;
-  city: String;
+  userName?: string;
+  password?: string;
+  firstName?: string;
+  lastName?: String;
+  birthDate?: Date;
+  gender?: String;
+  city?: String;
   address?: String;
-  email: String;
-  role: String;
-  admin: boolean;
-  authorized: boolean;
+  email?: String;
+  role?: String;
+  admin?: boolean;
+  authorized?: boolean;
 }
 
 export interface IUser extends mongoose.Document {

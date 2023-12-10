@@ -124,15 +124,68 @@ export async function getUser(userName: string): Promise<UserData> {
   return user;
 }
 
-export async function authorize(userName: string): Promise<boolean> {
+export async function authorize(userName: string): Promise<void> {
   const user = await User.getUser(userName).catch((err) => {
     throw err;
   });
-  if (user.role != 'manager') {
-    throw 'user must be manager';
-  }
   if (user.authorized == true) {
     throw 'user is already authorized';
   }
-  return User.authorize(userName);
+  await User.authorize(userName);
+}
+
+export async function deleteUser(userName: string): Promise<void> {
+  await User.deleteUser(userName).catch((err) => {
+    throw err;
+  });
+}
+export async function updateUser(
+  userName: string,
+  firstName: string,
+  lastName: string,
+  birthDate: string,
+  gender: string,
+  city: string,
+  address?: string,
+): Promise<void> {
+  let parsedDate: Date = new Date();
+  if (birthDate != undefined) {
+    if (!isDateString(birthDate)) {
+      throw 'invalid birthDate';
+    }
+    parsedDate = new Date(birthDate);
+  } else {
+    parsedDate = birthDate;
+  }
+  if (gender != 'male') {
+    if (gender != 'female') throw 'invalid gender';
+  }
+  await User.updateUser(
+    userName,
+    firstName,
+    lastName,
+    parsedDate,
+    gender,
+    city,
+    address,
+  ).catch((err) => {
+    throw err;
+  });
+}
+
+export async function updatePassword(
+  userName: string,
+  password: string,
+  newPassword: string,
+): Promise<void> {
+  const pass = await User.getUserpass(userName).catch((err) => {
+    throw err;
+  });
+  const authValid = await comparePasswords(password, pass);
+
+  if (!authValid) {
+    throw 'invalid password';
+  }
+  const generatedHash = await generatePassword(newPassword);
+  User.updatePassword(userName, generatedHash);
 }
