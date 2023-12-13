@@ -206,3 +206,14 @@ export async function updatePassword(
   const generatedHash = await generatePassword(newPassword);
   User.updatePassword(userName, generatedHash);
 }
+
+export async function getAllUnauthorized(): Promise<UserData[]> {
+  return User.getAllUsers(false);
+}
+export async function getAllauthorized(): Promise<UserData[]> {
+  return User.getAllUsers(true);
+}
+
+export async function switchRole(userName: string): Promise<void> {
+  await User.switchRole(userName);
+}

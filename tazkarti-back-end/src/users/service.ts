@@ -115,3 +115,43 @@ export async function updatePassword(
     throw err;
   });
 }
+
+export async function switchRole(userName: string): Promise<void> {
+  const available = await checkAvailableUserName(userName);
+  if (available) {
+    throw new CodedError(ErrorMessage.UserNotFound, ErrorCode.UserNotFound);
+  }
+  const user = await User.find({ userName: userName });
+  if (!user[0].authorized) {
+    throw new CodedError(
+      ErrorMessage.UserNotAuthorized,
+      ErrorCode.UserNotAuthorized,
+    );
+  }
+  if (user[0].role === 'fan') {
+    await User.updateOne({ userName }, { role: 'manager' }).catch((err) => {
+      throw err;
+    });
+  } else {
+    await User.updateOne({ userName }, { role: 'fan' }).catch((err) => {
+      throw err;
+    });
+  }
+}
+
+export async function getAllUsers(authorized: boolean): Promise<UserData[]> {
+  const users = await User.find({
+    authorized: authorized,
+    admin: { $ne: true },
+  }).catch((err) => {
+    throw err;
+  });
+  const userDataList: UserData[] = [];
+  users.forEach((user) => {
+    userDataList.push({
+      userName: user.userName,
+      role: user.role,
+    });
+  });
+  return userDataList;
+}

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import User from './users/model';
 import * as dotenv from 'dotenv';
+import User from './users/model';
 import { generatePassword } from './users/controller';
 
 // Config the .env file

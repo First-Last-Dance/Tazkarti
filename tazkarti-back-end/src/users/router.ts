@@ -98,6 +98,38 @@ const userRoutes = express.Router();
 /**
  * @swagger
  *   components:
+ *           UnauthorizedUsersSchema:
+ *             type: object
+ *             properties:
+ *               userName:
+ *                 type: string
+ *                 required: true
+ *                 describtion: the userName of the user
+ *               role:
+ *                 type: string
+ *                 required: true
+ *                 describtion: must be fan or manager
+ */
+
+/**
+ * @swagger
+ *   components:
+ *           AuthorizedUsersSchema:
+ *             type: object
+ *             properties:
+ *               userName:
+ *                 type: string
+ *                 required: true
+ *                 describtion: the userName of the user
+ *               role:
+ *                 type: string
+ *                 required: true
+ *                 describtion: must be fan or manager
+ */
+
+/**
+ * @swagger
+ *   components:
  *           userChangePasswordSchema:
  *             type: object
  *             properties:
@@ -379,7 +411,7 @@ userRoutes.post('/signIn', async (req, res) => {
 /**
  * @swagger
  * /user/authorize:
- *  post:
+ *  patch:
  *      summary: authorize a user (only admin)
  *      tags: [Admin]
  *      security:
@@ -405,7 +437,7 @@ userRoutes.post('/signIn', async (req, res) => {
  *          500:
  *              $ref: '#/components/responses/ServerError'
  */
-userRoutes.post('/authorize', requireAuth, requireAdmin, async (req, res) => {
+userRoutes.patch('/authorize', requireAuth, requireAdmin, async (req, res) => {
   if (!req.body.userName) {
     res.status(400).send('userName to be authorized is required');
   }
@@ -559,6 +591,124 @@ userRoutes.patch('/changePassword', requireAuth, async (req, res) => {
     req.body.password,
     req.body.newPassword,
   )
+    .then(() => {
+      res.status(200).send('ok');
+    })
+    .catch((err) => {
+      if (err instanceof CodedError) {
+        res.status(err.code).send(err.message);
+      } else {
+        res.status(500).send(err);
+      }
+    });
+});
+
+/**
+ * @swagger
+ * /user/unauthorized:
+ *  get:
+ *      summary: return a list of unauthorized users (only admin)
+ *      tags: [Admin]
+ *      security:
+ *           - bearerAuth: []
+ *      responses:
+ *          200:
+ *              $ref: '#/components/UnauthorizedUsersSchema'
+ *              example:
+ *                userName: Amr49
+ *                role: fan
+ *          400:
+ *              $ref: '#/components/responses/BadRequest'
+ *          401:
+ *              $ref: '#/components/responses/UnauthorizedError'
+ *          500:
+ *              $ref: '#/components/responses/ServerError'
+ */
+
+userRoutes.get('/unauthorized', requireAuth, requireAdmin, async (req, res) => {
+  await User.getAllUnauthorized()
+    .then((usersData) => {
+      res.status(200).send(usersData);
+    })
+    .catch((err) => {
+      if (err instanceof CodedError) {
+        res.status(err.code).send(err.message);
+      } else {
+        res.status(500).send(err);
+      }
+    });
+});
+
+/**
+ * @swagger
+ * /user/authorized:
+ *  get:
+ *      summary: return a list of authorized users (only admin)
+ *      tags: [Admin]
+ *      security:
+ *           - bearerAuth: []
+ *      responses:
+ *          200:
+ *              $ref: '#/components/AuthorizedUsersSchema'
+ *              example:
+ *                userName: Amr49
+ *                role: fan
+ *          400:
+ *              $ref: '#/components/responses/BadRequest'
+ *          401:
+ *              $ref: '#/components/responses/UnauthorizedError'
+ *          500:
+ *              $ref: '#/components/responses/ServerError'
+ */
+
+userRoutes.get('/authorized', requireAuth, requireAdmin, async (req, res) => {
+  await User.getAllauthorized()
+    .then((usersData) => {
+      res.status(200).send(usersData);
+    })
+    .catch((err) => {
+      if (err instanceof CodedError) {
+        res.status(err.code).send(err.message);
+      } else {
+        res.status(500).send(err);
+      }
+    });
+});
+
+/**
+ * @swagger
+ * /user/switchRole:
+ *  patch:
+ *      summary: switch the role of an authorized user (only admin)
+ *      tags: [Admin]
+ *      security:
+ *           - bearerAuth: []
+ *      requestBody:
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          userName:
+ *                              type: string
+ *                              required: true
+ *                  example:
+ *                      userName: Amr49
+ *      responses:
+ *          200:
+ *              $ref: '#/components/responses/Ok'
+ *          400:
+ *              $ref: '#/components/responses/BadRequest'
+ *          401:
+ *              $ref: '#/components/responses/UnauthorizedError'
+ *          500:
+ *              $ref: '#/components/responses/ServerError'
+ */
+userRoutes.patch('/switchRole', requireAuth, requireAdmin, async (req, res) => {
+  if (!req.body.userName) {
+    res.status(400).send('userName to switch his role');
+  }
+  await User.switchRole(req.body.userName)
     .then(() => {
       res.status(200).send('ok');
     })

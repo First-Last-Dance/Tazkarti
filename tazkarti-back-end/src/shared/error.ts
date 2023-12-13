@@ -16,6 +16,7 @@ export enum ErrorMessage {
   invalidEmail = 'Invalid Email',
   wrongPassword = 'Wrong password',
   UserAlreadyAuthorized = 'User already authorized',
+  UserNotAuthorized = 'User not authorized',
 }
 
 // code enums
@@ -26,4 +27,5 @@ export enum ErrorCode {
   authenticationError = 401,
   AlreadyExist = 400,
   UserAlreadyAuthorized = 400,
+  UserNotAuthorized = 400,
 }
