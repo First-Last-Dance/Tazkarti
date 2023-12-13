@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import styled from "@mui/material/styles/styled";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 export const Container = styled(Box)(({ theme }) => ({
   width: "90%",
@@ -32,14 +32,14 @@ export const Header = styled(Typography)(({ theme }) => ({
   "@media screen and (max-width: 768px)": {},
 }));
 
-export const MyButton = styled(Box)(({ theme }) => ({
+export const MyButton = styled(Button)(({ theme, disabled }) => ({
   fontSize: "1rem",
   color: "white",
   padding: "5px 10px",
   borderRadius: "5px",
   textAlign: "center",
   cursor: "pointer",
-  backgroundColor: theme.palette.blue.main,
+  backgroundColor: !disabled ? theme.palette.blue.main : "gray",
   width: "100%",
 
   "@media screen and (max-width: 768px)": {},

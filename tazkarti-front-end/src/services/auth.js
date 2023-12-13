@@ -57,4 +57,20 @@ const getUserData = (fetchData, auth) => {
   });
 };
 
-export { signUp, logIn, getUserData };
+const editUserData = (fetchData, auth, objectData) => {
+  if (!auth || !auth.isLoggedIn() || !auth.getToken()) return;
+  fetchData({
+    axiosInstance: axios,
+    method: "patch",
+    url: "/user",
+    requestConfig: {
+      data: objectData,
+      headers: {
+        "Content-Language": "en-US",
+        authorization: `Bearer ${auth.getToken()}`,
+      },
+    },
+  });
+};
+
+export { signUp, logIn, getUserData, editUserData };
