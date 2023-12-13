@@ -98,33 +98,45 @@ const userRoutes = express.Router();
 /**
  * @swagger
  *   components:
- *           UnauthorizedUsersSchema:
- *             type: object
- *             properties:
- *               userName:
- *                 type: string
- *                 required: true
- *                 describtion: the userName of the user
- *               role:
- *                 type: string
- *                 required: true
- *                 describtion: must be fan or manager
+ *           UnauthorizedUsersResponse:
+ *            content:
+ *              application/json:
+ *                schema:
+ *                  type: object
+ *                  properties:
+ *                    userName:
+ *                      type: string
+ *                      required: true
+ *                      describtion: the userName of the user
+ *                    role:
+ *                      type: string
+ *                      required: true
+ *                      describtion: must be fan or manager
+ *                example:
+ *                  userName: Amr49
+ *                  role: fan
  */
 
 /**
  * @swagger
  *   components:
- *           AuthorizedUsersSchema:
- *             type: object
- *             properties:
- *               userName:
- *                 type: string
- *                 required: true
- *                 describtion: the userName of the user
- *               role:
- *                 type: string
- *                 required: true
- *                 describtion: must be fan or manager
+ *           AuthorizedUsersResponse:
+ *            content:
+ *              application/json:
+ *                schema:
+ *                  type: object
+ *                  properties:
+ *                    userName:
+ *                      type: string
+ *                      required: true
+ *                      describtion: the userName of the user
+ *                    role:
+ *                      type: string
+ *                      required: true
+ *                      describtion: must be fan or manager
+ *                example:
+ *                  userName: Amr49
+ *                  role: fan
  */
 
 /**
@@ -613,10 +625,7 @@ userRoutes.patch('/changePassword', requireAuth, async (req, res) => {
  *           - bearerAuth: []
  *      responses:
  *          200:
- *              $ref: '#/components/UnauthorizedUsersSchema'
- *              example:
- *                userName: Amr49
- *                role: fan
+ *              $ref: '#/components/UnauthorizedUsersResponse'
  *          400:
  *              $ref: '#/components/responses/BadRequest'
  *          401:
@@ -649,10 +658,7 @@ userRoutes.get('/unauthorized', requireAuth, requireAdmin, async (req, res) => {
  *           - bearerAuth: []
  *      responses:
  *          200:
- *              $ref: '#/components/AuthorizedUsersSchema'
- *              example:
- *                userName: Amr49
- *                role: fan
+ *              $ref: '#/components/AuthorizedUsersResponse'
  *          400:
  *              $ref: '#/components/responses/BadRequest'
  *          401:
