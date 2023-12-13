@@ -1,27 +1,30 @@
 import * as jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
 import * as EmailValidator from 'email-validator';
-import * as User from './service';
 import bcrypt from 'bcryptjs';
+import * as User from './service';
 import { UserData } from './model';
+import { CodedError, ErrorCode, ErrorMessage } from '../shared/error';
 
-async function generatePassword(plainTextPassword: string): Promise<string> {
+export async function generatePassword(
+  plainTextPassword: string,
+): Promise<string> {
   const saltRounds = 10;
   const salt = await bcrypt.genSalt(saltRounds);
-  return await bcrypt.hash(plainTextPassword, salt);
+  return bcrypt.hash(plainTextPassword, salt);
 }
 
 async function comparePasswords(
   plainTextPassword: string,
   hash: string,
 ): Promise<boolean> {
-  return await bcrypt.compare(plainTextPassword, hash);
+  return bcrypt.compare(plainTextPassword, hash);
 }
 
 function generateJWT(userName: string): string {
   dotenv.config();
   return jwt.sign(
-    { userName: userName },
+    { userName },
     process.env.JWT_SECRET as unknown as jwt.Secret,
   );
 }
@@ -36,7 +39,7 @@ function isDateString(input: string): boolean {
 
   // Parse the input string as a Date object and check if it's a valid date
   const parsedDate = new Date(input);
-  return !isNaN(parsedDate.getTime());
+  return !Number.isNaN(parsedDate.getTime());
 }
 
 export async function signUp(
@@ -53,55 +56,53 @@ export async function signUp(
 ): Promise<string> {
   const vaildUser = await User.checkAvailableUserName(userName);
   if (!vaildUser) {
-    throw 'user already exists';
+    throw new CodedError(ErrorMessage.UserAlreadyExist, ErrorCode.AlreadyExist);
   }
   if (!email || !EmailValidator.validate(email)) {
-    throw 'invalid email';
+    throw new CodedError(ErrorMessage.invalidEmail, ErrorCode.invalidParameter);
   }
   if (!isDateString(birthDate)) {
-    throw 'invalid birthDate';
+    throw new CodedError(
+      ErrorMessage.invalidBirthDate,
+      ErrorCode.invalidParameter,
+    );
   }
-  if (gender != 'male') {
-    if (gender != 'female') throw 'invalid gender';
+  if (gender !== 'male') {
+    if (gender !== 'female') {
+      throw new CodedError(
+        ErrorMessage.invalidGender,
+        ErrorCode.invalidParameter,
+      );
+    }
   }
-  if (role != 'fan') {
-    if (role != 'manager') throw 'invalid role';
+  if (role !== 'fan') {
+    if (role !== 'manager') {
+      throw new CodedError(
+        ErrorMessage.invalidRole,
+        ErrorCode.invalidParameter,
+      );
+    }
   }
   const generatedHash = await generatePassword(password);
-  let flag = false;
   const parsedDate = new Date(birthDate);
-  if (address != undefined) {
-    flag = await User.addUser(
-      userName,
-      generatedHash,
-      firstName,
-      lastName,
-      parsedDate,
-      gender,
-      city,
-      email,
-      role,
-      address,
-    );
-  } else {
-    flag = await User.addUser(
-      userName,
-      generatedHash,
-      firstName,
-      lastName,
-      parsedDate,
-      gender,
-      city,
-      email,
-      role,
-    );
+  const userData: UserData = {};
+  userData.userName = userName;
+  userData.password = generatedHash;
+  userData.firstName = firstName;
+  userData.lastName = lastName;
+  userData.birthDate = parsedDate;
+  userData.gender = gender;
+  userData.city = city;
+  userData.email = email;
+  userData.role = role;
+  userData.authorized = false;
+  if (address !== undefined) {
+    userData.address = address;
   }
-  if (flag) {
-    const jwt = generateJWT(userName);
-    return jwt;
-  } else {
-    throw 'Failed to add to DB';
-  }
+  await User.addUser(userData).catch((err) => {
+    throw err;
+  });
+  return generateJWT(userName);
 }
 
 export async function signIn(userName: string, password: string) {
@@ -111,10 +112,12 @@ export async function signIn(userName: string, password: string) {
   const authValid = await comparePasswords(password, pass);
 
   if (!authValid) {
-    throw 'invalid password';
+    throw new CodedError(
+      ErrorMessage.wrongPassword,
+      ErrorCode.authenticationError,
+    );
   }
-  const jwt = generateJWT(userName);
-  return jwt;
+  return generateJWT(userName);
 }
 
 export async function getUser(userName: string): Promise<UserData> {
@@ -128,8 +131,11 @@ export async function authorize(userName: string): Promise<void> {
   const user = await User.getUser(userName).catch((err) => {
     throw err;
   });
-  if (user.authorized == true) {
-    throw 'user is already authorized';
+  if (user.authorized === true) {
+    throw new CodedError(
+      ErrorMessage.UserAlreadyAuthorized,
+      ErrorCode.UserAlreadyAuthorized,
+    );
   }
   await User.authorize(userName);
 }
@@ -149,16 +155,24 @@ export async function updateUser(
   address?: string,
 ): Promise<void> {
   let parsedDate: Date = new Date();
-  if (birthDate != undefined) {
+  if (birthDate !== undefined) {
     if (!isDateString(birthDate)) {
-      throw 'invalid birthDate';
+      throw new CodedError(
+        ErrorMessage.invalidBirthDate,
+        ErrorCode.invalidParameter,
+      );
     }
     parsedDate = new Date(birthDate);
   } else {
     parsedDate = birthDate;
   }
-  if (gender != 'male') {
-    if (gender != 'female') throw 'invalid gender';
+  if (gender !== undefined && gender !== 'male') {
+    if (gender !== 'female') {
+      throw new CodedError(
+        ErrorMessage.invalidGender,
+        ErrorCode.invalidParameter,
+      );
+    }
   }
   await User.updateUser(
     userName,
@@ -184,8 +198,22 @@ export async function updatePassword(
   const authValid = await comparePasswords(password, pass);
 
   if (!authValid) {
-    throw 'invalid password';
+    throw new CodedError(
+      ErrorMessage.wrongPassword,
+      ErrorCode.authenticationError,
+    );
   }
   const generatedHash = await generatePassword(newPassword);
   User.updatePassword(userName, generatedHash);
+}
+
+export async function getAllUnauthorized(): Promise<UserData[]> {
+  return User.getAllUsers(false);
+}
+export async function getAllauthorized(): Promise<UserData[]> {
+  return User.getAllUsers(true);
+}
+
+export async function switchRole(userName: string): Promise<void> {
+  await User.switchRole(userName);
 }

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
+
+const { Schema } = mongoose;
 
 export interface UserData {
   userName?: string;
@@ -75,7 +76,7 @@ const userSchema = new Schema<IUser>({
   },
   admin: {
     type: Boolean,
-    required: true,
+    required: false,
   },
   authorized: {
     type: Boolean,

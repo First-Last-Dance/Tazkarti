@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { NextFunction } from 'connect';
 import * as jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
@@ -16,7 +16,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
   }
 
   const tokenBearer = req.headers.authorization.split(' ');
-  if (tokenBearer.length != 2) {
+  if (tokenBearer.length !== 2) {
     return res.status(401).send('Malformed token.');
   }
 
@@ -39,13 +39,11 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 
 export function requireAdmin(req: Request, res: Response, next: NextFunction) {
   isAdmin(res.locals.userName)
-    .then((isAdmin) => {
-      if (isAdmin) {
+    .then((admin) => {
+      if (admin) {
         return next();
       }
       return res.status(401).send('signed in user must be admin');
     })
-    .catch((err) => {
-      return res.status(500).send(err);
-    });
+    .catch((err) => res.status(500).send(err));
 }
