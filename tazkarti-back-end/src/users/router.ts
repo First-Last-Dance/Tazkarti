@@ -1,6 +1,7 @@
 import express from 'express';
 import * as User from './controller';
 import { requireAdmin, requireAuth } from '../shared/authentication';
+import { CodedError } from '../shared/error';
 
 const userRoutes = express.Router();
 /**
@@ -71,24 +72,24 @@ const userRoutes = express.Router();
  *             properties:
  *               password:
  *                 type: string
- *                 required: true
+ *                 required: false
  *               firstName:
  *                 type: string
- *                 required: true
+ *                 required: false
  *               lastName:
  *                 type: string
- *                 required: true
+ *                 required: false
  *               birthDate:
  *                 type: string
- *                 required: true
+ *                 required: false
  *                 describtion: Must be of a valid format like "YYYY-MM-DD"
  *               gender:
  *                 type: string
- *                 required: true
+ *                 required: false
  *                 describtion: must be male or female
  *               city:
  *                 type: string
- *                 required: true
+ *                 required: false
  *               address:
  *                 type: string
  *                 required: false
@@ -145,9 +146,6 @@ const userRoutes = express.Router();
  *               address:
  *                 type: string
  *                 required: false
- *               admin:
- *                 type: boolean
- *                 required: true
  *               authorized:
  *                 type: boolean
  *                 required: true
@@ -206,7 +204,11 @@ userRoutes.get('/', requireAuth, async (req, res) => {
       res.status(200).send(user);
     })
     .catch((err) => {
-      res.status(500).send(err);
+      if (err instanceof CodedError) {
+        res.status(err.code).send(err.message);
+      } else {
+        res.status(500).send(err);
+      }
     });
 });
 
@@ -259,31 +261,31 @@ userRoutes.get('/', requireAuth, async (req, res) => {
  */
 userRoutes.post('/signUp', async (req, res) => {
   if (!req.body.userName) {
-    return res.status(400).send('userName is required');
+    res.status(400).send('userName is required');
   }
   if (!req.body.password) {
-    return res.status(400).send('Password is required');
+    res.status(400).send('Password is required');
   }
   if (!req.body.firstName) {
-    return res.status(400).send('firstName is required');
+    res.status(400).send('firstName is required');
   }
   if (!req.body.lastName) {
-    return res.status(400).send('lastName is required');
+    res.status(400).send('lastName is required');
   }
   if (!req.body.birthDate) {
-    return res.status(400).send('birthDate is required');
+    res.status(400).send('birthDate is required');
   }
   if (!req.body.gender) {
-    return res.status(400).send('gender is required');
+    res.status(400).send('gender is required');
   }
   if (!req.body.city) {
-    return res.status(400).send('city is required');
+    res.status(400).send('city is required');
   }
   if (!req.body.email) {
-    return res.status(400).send('email is required');
+    res.status(400).send('email is required');
   }
   if (!req.body.role) {
-    return res.status(400).send('role is required');
+    res.status(400).send('role is required');
   }
   await User.signUp(
     req.body.userName,
@@ -301,16 +303,8 @@ userRoutes.post('/signUp', async (req, res) => {
       res.status(200).send({ auth: true, token: jwt });
     })
     .catch((err) => {
-      if (err == 'user already exists') {
-        res.status(400).send('User already exists');
-      } else if (err == 'invalid email') {
-        res.status(400).send('invalid email');
-      } else if (err == 'invalid birthDate') {
-        res.status(400).send('invalid birthDate');
-      } else if (err == 'invalid gender') {
-        res.status(400).send('invalid gender');
-      } else if (err == 'invalid role') {
-        res.status(400).send('invalid role');
+      if (err instanceof CodedError) {
+        res.status(err.code).send(err.message);
       } else {
         res.status(500).send(err);
       }
@@ -364,20 +358,18 @@ userRoutes.post('/signUp', async (req, res) => {
  */
 userRoutes.post('/signIn', async (req, res) => {
   if (!req.body.userName) {
-    return res.status(400).send('userName is required');
+    res.status(400).send('userName is required');
   }
   if (!req.body.password) {
-    return res.status(400).send('Password is required');
+    res.status(400).send('Password is required');
   }
   await User.signIn(req.body.userName, req.body.password)
     .then((jwt) => {
       res.status(200).send({ auth: true, token: jwt });
     })
     .catch((err) => {
-      if (err == 'user not found') {
-        res.status(401).send('user not found');
-      } else if (err == 'invalid password') {
-        res.status(401).send('invalid password');
+      if (err instanceof CodedError) {
+        res.status(err.code).send(err.message);
       } else {
         res.status(500).send(err);
       }
@@ -415,15 +407,15 @@ userRoutes.post('/signIn', async (req, res) => {
  */
 userRoutes.post('/authorize', requireAuth, requireAdmin, async (req, res) => {
   if (!req.body.userName) {
-    return res.status(400).send('userName to be authorized is required');
+    res.status(400).send('userName to be authorized is required');
   }
   await User.authorize(req.body.userName)
     .then(() => {
       res.status(200).send('ok');
     })
     .catch((err) => {
-      if (err == 'user not found') {
-        res.status(400).send('user not found');
+      if (err instanceof CodedError) {
+        res.status(err.code).send(err.message);
       } else {
         res.status(500).send(err);
       }
@@ -461,15 +453,15 @@ userRoutes.post('/authorize', requireAuth, requireAdmin, async (req, res) => {
  */
 userRoutes.delete('/', requireAuth, requireAdmin, async (req, res) => {
   if (!req.body.userName) {
-    return res.status(400).send('userName to be deleted is required');
+    res.status(400).send('userName to be deleted is required');
   }
   await User.deleteUser(req.body.userName)
     .then(() => {
       res.status(200).send('ok');
     })
     .catch((err) => {
-      if (err == 'user not found') {
-        res.status(400).send('user not found');
+      if (err instanceof CodedError) {
+        res.status(err.code).send(err.message);
       } else {
         res.status(500).send(err);
       }
@@ -520,10 +512,8 @@ userRoutes.patch('/', requireAuth, async (req, res) => {
       res.status(200).send('ok');
     })
     .catch((err) => {
-      if (err == 'invalid birthDate') {
-        res.status(400).send('invalid birthDate');
-      } else if (err == 'invalid gender') {
-        res.status(400).send('invalid gender');
+      if (err instanceof CodedError) {
+        res.status(err.code).send(err.message);
       } else {
         res.status(500).send(err);
       }
@@ -559,10 +549,10 @@ userRoutes.patch('/', requireAuth, async (req, res) => {
 
 userRoutes.patch('/changePassword', requireAuth, async (req, res) => {
   if (!req.body.password) {
-    return res.status(400).send('Password is required');
+    res.status(400).send('Password is required');
   }
   if (!req.body.newPassword) {
-    return res.status(400).send('New password is required');
+    res.status(400).send('New password is required');
   }
   await User.updatePassword(
     res.locals.userName,
@@ -573,8 +563,8 @@ userRoutes.patch('/changePassword', requireAuth, async (req, res) => {
       res.status(200).send('ok');
     })
     .catch((err) => {
-      if (err == 'invalid password') {
-        res.status(400).send('invalid password');
+      if (err instanceof CodedError) {
+        res.status(err.code).send(err.message);
       } else {
         res.status(500).send(err);
       }

@@ -1,13 +1,13 @@
+import { CodedError, ErrorCode, ErrorMessage } from '../shared/error';
 import User, { UserData } from './model';
 
 export async function getUser(userName: string): Promise<UserData> {
-  const user = await User.find({ userName: userName }).exec();
-  if (user.length == 0) {
-    throw 'user not found';
+  const user = await User.find({ userName }).exec();
+  if (user.length === 0) {
+    throw new CodedError(ErrorMessage.UserNotFound, ErrorCode.UserNotFound);
   }
   const userData = {
     userName: user[0].userName,
-    password: '',
     firstName: user[0].firstName,
     lastName: user[0].lastName,
     birthDate: user[0].birthDate,
@@ -23,39 +23,14 @@ export async function getUser(userName: string): Promise<UserData> {
 }
 
 export async function getUserpass(userName: string): Promise<string> {
-  const password = await User.find({ userName: userName }).select('password');
-  if (password.length == 0) {
-    throw 'user not found';
+  const password = await User.find({ userName }).select('password');
+  if (password.length === 0) {
+    throw new CodedError(ErrorMessage.UserNotFound, ErrorCode.UserNotFound);
   }
   return password[0].password;
 }
 
-export async function addUser(
-  userName: string,
-  password: string,
-  firstName: string,
-  lastName: string,
-  birthDate: Date,
-  gender: string,
-  city: string,
-  email: string,
-  role: string,
-  address?: string,
-): Promise<boolean> {
-  const userData = {
-    userName: userName,
-    password: password,
-    firstName: firstName,
-    lastName: lastName,
-    birthDate: birthDate,
-    gender: gender,
-    city: city,
-    email: email,
-    role: role,
-    admin: false,
-    authorized: false,
-    address: address != undefined ? address : 'unavailable',
-  };
+export async function addUser(userData: UserData): Promise<boolean> {
   const user = new User(userData);
   await user.save().catch((err) => {
     throw err;
@@ -64,40 +39,37 @@ export async function addUser(
 }
 
 export async function checkAvailableUserName(userName: string) {
-  return (await User.find({ userName: userName }).exec()).length == 0;
+  return (await User.find({ userName }).exec()).length === 0;
 }
 
 export async function isAdmin(userName: string): Promise<boolean> {
-  const user = await User.find({ userName: userName })
+  const user = await User.find({ userName })
     .select('admin')
     .catch((err) => {
       throw err;
     });
   if (!user[0].admin) {
     return false;
-  } else {
-    return true;
   }
+  return true;
 }
 
 export async function authorize(userName: string): Promise<void> {
   const available = await checkAvailableUserName(userName);
   if (available) {
-    throw 'user not found';
+    throw new CodedError(ErrorMessage.UserNotFound, ErrorCode.UserNotFound);
   }
-  await User.updateOne({ userName: userName }, { authorized: true }).catch(
-    (err) => {
-      throw err;
-    },
-  );
+  await User.updateOne({ userName }, { authorized: true }).catch((err) => {
+    throw err;
+  });
 }
 
 export async function deleteUser(userName: string): Promise<void> {
   const available = await checkAvailableUserName(userName);
   if (available) {
-    throw 'user not found';
+    throw new CodedError(ErrorMessage.UserNotFound, ErrorCode.UserNotFound);
   }
-  await User.deleteOne({ userName: userName }).catch((err) => {
+  await User.deleteOne({ userName }).catch((err) => {
     throw err;
   });
 }
@@ -111,26 +83,26 @@ export async function updateUser(
   city?: string,
   address?: string,
 ): Promise<void> {
-  let newData: UserData = {};
-  if (firstName != undefined) {
+  const newData: UserData = {};
+  if (firstName !== undefined) {
     newData.firstName = firstName;
   }
-  if (lastName != undefined) {
+  if (lastName !== undefined) {
     newData.lastName = lastName;
   }
-  if (birthDate != undefined) {
+  if (birthDate !== undefined) {
     newData.birthDate = birthDate;
   }
-  if (gender != undefined) {
+  if (gender !== undefined) {
     newData.gender = gender;
   }
-  if (city != undefined) {
+  if (city !== undefined) {
     newData.city = city;
   }
-  if (address != undefined) {
+  if (address !== undefined) {
     newData.address = address;
   }
-  await User.updateOne({ userName: userName }, newData).catch((err) => {
+  await User.updateOne({ userName }, newData).catch((err) => {
     throw err;
   });
 }
@@ -139,9 +111,7 @@ export async function updatePassword(
   userName: string,
   newPassword: string,
 ): Promise<void> {
-  await User.updateOne({ userName: userName }, { password: newPassword }).catch(
-    (err) => {
-      throw err;
-    },
-  );
+  await User.updateOne({ userName }, { password: newPassword }).catch((err) => {
+    throw err;
+  });
 }

@@ -1,10 +1,10 @@
 import * as dotenv from 'dotenv';
 import express from 'express';
-import routes from './router';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import routes from './router';
 
 // Config the .env file
 dotenv.config();
@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 8080;
 
-//add cors
+// add cors
 // app.use(cors());
 // We set the CORS origin to * so that we don't need to
 // worry about the complexities of CORS.
@@ -53,7 +53,7 @@ const openapiSpecification = swaggerJsdoc(options);
 
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(openapiSpecification));
 
-//Add the json parser
+// Add the json parser
 app.use(express.json());
 
 // Set the main router
@@ -63,12 +63,13 @@ app.use('/', routes);
 
 mongoose
   .connect(
-    'mongodb://' + (process.env.DB_Host as string) ||
-      '0.0.0.0:27017' + '/Tazkarti',
+    `${
+      `mongodb://${process.env.DB_Host as string}` || 'mongodb://0.0.0.0:27017'
+    }/Tazkarti`,
     { dbName: 'Tazkarti' },
   )
   .then(() => {
-    console.log(`DB connected`);
+    console.log('DB connected');
     // Start the API
     app.listen(port, () => {
       console.log(`Backend server is listening on port ${port}....`);
@@ -77,11 +78,22 @@ mongoose
   })
   .catch((err) => console.log(err));
 
-// mongoose
-//   .connect('mongodb://0.0.0.0:27017/Tazkarti')
-//   .then(() => {
-//     console.log('Connected to MongoDB');
-//   })
-//   .catch((err) => {
-//     console.error('Error connecting to MongoDB:', err);
-//   });
+// const cleanUp = (eventType: any) => {
+//   mongoose.connection
+//     .close()
+//     .then(() => {
+//       console.info('closed');
+//     })
+//     .catch((err) => console.log(err));
+// };
+
+// [
+//   `exit`,
+//   `SIGINT`,
+//   `SIGUSR1`,
+//   `SIGUSR2`,
+//   `uncaughtException`,
+//   `SIGTERM`,
+// ].forEach((eventType) => {
+//   process.on(eventType, cleanUp.bind(null, eventType));
+// });
