@@ -8,6 +8,7 @@ import AllMatches from "../pages/AllMatches/AllMatches";
 import ProfilePage from "../pages/ProfilePage/ProfilePage";
 
 import RequireAuth from "../contexts/RequireAuth";
+import Admin from "../pages/Admin/Admin";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,14 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <ProfilePage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "dashboard",
+        element: (
+          <RequireAuth>
+            <Admin />
           </RequireAuth>
         ),
       },

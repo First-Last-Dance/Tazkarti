@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { Container, Header, Role, Splitter } from "./Profile.styled";
+import { Container, Header, MyButton, Role, Splitter } from "./Profile.styled";
 
 import { useState, useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/Authentication";
 import useFetchFunction from "../../hooks/useFetchFunction";
-import { getUserData } from "../../services/auth";
+import { getUserData, editUserData } from "../../services/auth";
 import { egyptGovernorates } from "../../constants";
 import TextField from "../../components/TextField/TextField";
 import DropDown from "../../components/DropDown/DropDown";
@@ -25,13 +25,19 @@ const Profile = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [date, setDate] = useState(dayjs("2022-04-17"));
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState("male");
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
   const [role, setRole] = useState("");
   const [edit, setEdit] = useState(false);
 
   const [data, error, isLoading, dataFetch] = useFetchFunction();
+
+  const convertToShortDate = (longDate) => {
+    const dateObj = new Date(longDate);
+    const shortDate = dateObj.toISOString().split("T")[0];
+    return shortDate;
+  };
 
   useEffect(() => {
     getUserData(dataFetch, auth);
@@ -51,6 +57,16 @@ const Profile = () => {
     }
   }, [data]);
 
+  const handleSubmit = () => {
+    editUserData(dataFetch, auth, {
+      firstName: firstName,
+      lastName: lastName,
+      birthDate: convertToShortDate(date),
+      gender: gender,
+      city: city,
+      address: address,
+    });
+  };
   return (
     <Container>
       <Splitter>
@@ -127,6 +143,9 @@ const Profile = () => {
               disabled={!edit}
             />
           </Splitter>
+          <MyButton disabled={!edit} onClick={handleSubmit}>
+            Save
+          </MyButton>
         </>
       )}
     </Container>
