@@ -21,6 +21,7 @@ import { useAuth } from "../../contexts/Authentication";
 
 const pages = ["Matches"];
 const settingsLoggedIn = ["Profile", "Account", "Dashboard", "Logout"];
+const settingsLoggedInNotAdmin = ["Profile", "Account", "Logout"];
 const settingsLoggedout = ["Sign Up", "Log In"];
 
 function NavBar() {
@@ -175,7 +176,29 @@ function NavBar() {
                 onClose={handleCloseUserMenu}
               >
                 {auth.isLoggedIn() &&
+                  auth.getUserName() === "Admin" &&
                   settingsLoggedIn.map((setting) => (
+                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                      <Typography
+                        textAlign="center"
+                        onClick={() => {
+                          if (setting == "Logout") {
+                            auth.logout();
+                            navigate("/login");
+                          } else {
+                            navigate(
+                              "/" + setting.replace(" ", "").toLowerCase()
+                            );
+                          }
+                        }}
+                      >
+                        {setting}
+                      </Typography>
+                    </MenuItem>
+                  ))}
+                {auth.isLoggedIn() &&
+                  auth.getUserName() !== "Admin" &&
+                  settingsLoggedInNotAdmin.map((setting) => (
                     <MenuItem key={setting} onClick={handleCloseUserMenu}>
                       <Typography
                         textAlign="center"

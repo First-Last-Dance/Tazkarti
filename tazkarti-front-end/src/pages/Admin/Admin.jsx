@@ -1,21 +1,30 @@
+import { useAuth } from "../../contexts/Authentication";
 import MyTable from "../../layouts/MyTable/MyTable";
 
 import { Container, Header } from "./Admin.styled";
 
-const users = [
-  { userName: "mohamedromee", role: "fan" },
-  { userName: "mohamedromee", role: "fan" },
-  { userName: "mohamedromee", role: "fan" },
-  { userName: "mohamedromee", role: "fan" },
-];
+
 
 const Admin = () => {
+  const auth = useAuth();
+
+
+
   return (
     <Container>
-      <Header>Waiting Users</Header>
-      <MyTable users={users} />
-      <Header>Approved Users</Header>
-      <MyTable users={users} approved = {true}/>
+      {auth.getUserName() === "Admin" && (
+        <>
+          <Header>Waiting Users</Header>
+          <MyTable />
+          <Header>Approved Users</Header>
+          <MyTable approved={true} />
+        </>
+      )}
+      {auth.getUserName() !== "Admin" && (
+        <>
+          <h1>Not Admin</h1>
+        </>
+      )}
     </Container>
   );
 };
