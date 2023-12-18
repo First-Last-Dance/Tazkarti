@@ -5,6 +5,7 @@ import { Box, Typography } from "@mui/material";
 export const Container = styled(Box)(({ theme }) => ({
   width: "95%",
   margin: "0 auto",
+  minHeight: "100vh",
   "@media screen and (max-width: 768px)": {},
 }));
 

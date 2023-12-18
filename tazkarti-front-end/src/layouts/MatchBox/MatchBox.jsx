@@ -18,7 +18,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 import { useNavigate } from "react-router-dom";
 
-const MatchBox = ({ id, name1, name2, stad, date }) => {
+const MatchBox = ({ id, name1, name2, stad, date, show }) => {
   const navigate = useNavigate();
 
   return (
@@ -34,13 +34,13 @@ const MatchBox = ({ id, name1, name2, stad, date }) => {
         </ClubBox>
         <MiddleContainer>
           {" "}
-          <ReserveButton
+        {!show &&  <ReserveButton
             onClick={() => {
               navigate(`/buy-ticket/${id}`);
             }}
           >
             Buy Ticket
-          </ReserveButton>
+          </ReserveButton>}
           <InfoContainer>
             <Stad>
               <StadiumIcon />

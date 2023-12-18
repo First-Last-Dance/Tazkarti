@@ -36,7 +36,7 @@ const AuthProvider = ({ children }) => {
 
   // Return user's username
   const getUserName = () => {
-    if (user.username) {
+    if (user) {
       return JSON.parse(user).username;
     } else {
       return undefined;
@@ -45,7 +45,7 @@ const AuthProvider = ({ children }) => {
 
   // Return user's token
   const getToken = () => {
-    if (user.token) {
+    if (user) {
       return JSON.parse(user).token;
     } else {
       return undefined;
@@ -54,7 +54,7 @@ const AuthProvider = ({ children }) => {
 
   // Return user's role
   const getRole = () => {
-    if (user.role) {
+    if (user) {
       return JSON.parse(user).role;
     } else {
       return undefined;
@@ -70,7 +70,7 @@ const AuthProvider = ({ children }) => {
   const isLoggedIn = () => {
     if (user !== "undefined") {
       console.log("Entered")
-      return JSON.parse(user).token !== undefined;
+      return user !== undefined;
     } else {
       return false;
     }

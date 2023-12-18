@@ -45,6 +45,7 @@ function NavBar() {
         setSettings(settingsLoggedInNotAdmin);
       }
       if (auth.getRole() === "manager") {
+        console.log("Entered manager")
         setPages(pagesManager);
       }
     } else {
@@ -71,10 +72,10 @@ function NavBar() {
     <>
       {" "}
       <AppBar
-        position="fixed"
+        position="static"
         sx={{
-          width: "100vw",
-          position: "fixed",
+          width: "100",
+          position: "static",
           margin: "0",
           left: 0,
           top: 0,

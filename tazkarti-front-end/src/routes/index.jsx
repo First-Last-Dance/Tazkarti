@@ -9,6 +9,8 @@ import ProfilePage from "../pages/ProfilePage/ProfilePage";
 
 import RequireAuth from "../contexts/RequireAuth";
 import Admin from "../pages/Admin/Admin";
+import CreateStad from "../pages/CreateStad/CreateStad";
+import CreateMatch from "../pages/CreateMatch/CreateMatch";
 
 
 
@@ -54,6 +56,22 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <Admin />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "createstaduim",
+        element: (
+          <RequireAuth>
+            <CreateStad />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "creatematch",
+        element: (
+          <RequireAuth>
+            <CreateMatch />
           </RequireAuth>
         ),
       },

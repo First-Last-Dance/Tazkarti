@@ -91,7 +91,7 @@ const SignUp = () => {
       </Splitter>
       <Splitter>
         <Gender value={gender} setValue={setGender} />
-        <MyDatePicker value={date} setValue={setDate} />{" "}
+        <MyDatePicker value={date} setValue={setDate} label={"Birth Date"}/>{" "}
       </Splitter>
       <Splitter>
         <DropDown

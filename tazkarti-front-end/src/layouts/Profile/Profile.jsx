@@ -123,6 +123,7 @@ const Profile = () => {
               value={date}
               setValue={setDate}
               disabled={!edit}
+              label={"Birth Date"}
             />{" "}
           </Splitter>
           <Splitter>

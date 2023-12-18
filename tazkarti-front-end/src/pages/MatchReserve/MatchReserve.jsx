@@ -36,10 +36,6 @@ const seats = [
 const MatchReserve = () => {
   const { id } = useParams();
 
-  console.log("Match id:", id);
-
-  const [rows, setRows] = useState(5);
-  const [cols, setCols] = useState(5); // Number of seats per row
 
   return (
     <Container>
