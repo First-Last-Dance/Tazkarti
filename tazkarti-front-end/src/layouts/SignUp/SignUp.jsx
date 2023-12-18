@@ -47,7 +47,7 @@ const SignUp = () => {
 
   useEffect(() => {
     if (data && data.token) {
-      auth.login({ username: userName, token: data.token });
+      auth.login({ username: userName, token: data.token, role: "fan" });
       navigate("/");
     }
   }, [data]);

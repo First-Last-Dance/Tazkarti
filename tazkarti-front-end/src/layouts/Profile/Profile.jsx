@@ -41,6 +41,7 @@ const Profile = () => {
 
   useEffect(() => {
     getUserData(dataFetch, auth);
+    
   }, []);
 
   useEffect(() => {

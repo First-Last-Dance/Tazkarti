@@ -43,6 +43,7 @@ const logIn = (fetchData, objectData) => {
 };
 
 const getUserData = (fetchData, auth) => {
+  console.log(auth.getToken())
   if (!auth || !auth.isLoggedIn() || !auth.getToken()) return;
   fetchData({
     axiosInstance: axios,

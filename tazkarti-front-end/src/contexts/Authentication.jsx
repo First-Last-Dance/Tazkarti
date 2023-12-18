@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import { createContext, useContext } from "react";
 
-
 import useLocalStorage from "./useLocalStorage";
 
 /* Creating a context object. */
@@ -31,18 +30,35 @@ const AuthProvider = ({ children }) => {
   // Handle logout
   const logout = () => {
     localStorage.clear();
-    console.log("Entering logout")
+    console.log("Entering logout");
     setUser(undefined);
   };
 
   // Return user's username
   const getUserName = () => {
-    return JSON.parse(user).username;
+    if (user.username) {
+      return JSON.parse(user).username;
+    } else {
+      return undefined;
+    }
   };
 
   // Return user's token
   const getToken = () => {
-    return JSON.parse(user).token;
+    if (user.token) {
+      return JSON.parse(user).token;
+    } else {
+      return undefined;
+    }
+  };
+
+  // Return user's role
+  const getRole = () => {
+    if (user.role) {
+      return JSON.parse(user).role;
+    } else {
+      return undefined;
+    }
   };
 
   // Return token's expiration date
@@ -52,7 +68,12 @@ const AuthProvider = ({ children }) => {
 
   // Is user logged in?
   const isLoggedIn = () => {
-    return user !== undefined;
+    if (user !== "undefined") {
+      console.log("Entered")
+      return JSON.parse(user).token !== undefined;
+    } else {
+      return false;
+    }
   };
   return (
     <AuthContext.Provider
@@ -64,6 +85,7 @@ const AuthProvider = ({ children }) => {
         getUserName,
         getExpirationDate,
         isLoggedIn,
+        getRole,
         //getFullName,
       }}
     >
@@ -71,7 +93,6 @@ const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
 
 const useAuth = () => {
   return useContext(AuthContext);
