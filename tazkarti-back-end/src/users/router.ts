@@ -390,9 +390,13 @@ userRoutes.post('/signUp', async (req, res) => {
  *                              token:
  *                                  type: string
  *                                  describtion: the jwt token
+ *                              role:
+ *                                  type: string
+ *                                  describtion: the role of the user
  *                      example:
  *                          auth: true
  *                          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkFtcjQ5IiwiaWF0IjoxNzAyMTExODUzfQ.yf_8a-KZ6dSpkJL6Pp3A7GyHR3taPrzTFD5rNlrGfOs
+ *                          role: fan
  *          400:
  *              $ref: '#/components/responses/BadRequest'
  *          401:
@@ -408,8 +412,10 @@ userRoutes.post('/signIn', async (req, res) => {
     res.status(400).send('Password is required');
   }
   await User.signIn(req.body.userName, req.body.password)
-    .then((jwt) => {
-      res.status(200).send({ auth: true, token: jwt });
+    .then((result) => {
+      res
+        .status(200)
+        .send({ auth: true, token: result.jwt, role: result.role });
     })
     .catch((err) => {
       if (err instanceof CodedError) {
