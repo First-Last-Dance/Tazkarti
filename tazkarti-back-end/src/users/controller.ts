@@ -109,6 +109,9 @@ export async function signIn(userName: string, password: string) {
   const pass = await User.getUserpass(userName).catch((err) => {
     throw err;
   });
+  const user = await User.getUser(userName).catch((err) => {
+    throw err;
+  });
   const authValid = await comparePasswords(password, pass);
 
   if (!authValid) {
@@ -117,7 +120,7 @@ export async function signIn(userName: string, password: string) {
       ErrorCode.authenticationError,
     );
   }
-  return generateJWT(userName);
+  return { jwt: generateJWT(userName), role: user.role };
 }
 
 export async function getUser(userName: string): Promise<UserData> {
