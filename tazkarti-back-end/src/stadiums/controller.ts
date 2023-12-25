@@ -1,5 +1,5 @@
 import * as Stadium from './service';
-import stadium, { StadiumData } from './model';
+import { StadiumData } from './model';
 import { CodedError, ErrorCode, ErrorMessage } from '../shared/error';
 
 export async function Add(
