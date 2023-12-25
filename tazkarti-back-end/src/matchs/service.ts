@@ -2,20 +2,21 @@ import { CodedError, ErrorCode, ErrorMessage } from '../shared/error';
 import Match, { MatchData } from './model';
 
 export async function getMatch(matchID: string): Promise<MatchData> {
-  const match = await Match.find({ _id: matchID }).exec();
-  if (match.length === 0) {
+  const match = await Match.findById(matchID).exec();
+  console.log(match);
+  if (match === null) {
     throw new CodedError(ErrorMessage.MatchNotFound, ErrorCode.MatchNotFound);
   }
   const matchData: MatchData = {
-    matchID: match[0]._id,
-    homeTeam: match[0].homeTeam,
-    awayTeam: match[0].awayTeam,
-    date: match[0].date,
-    firstLinesman: match[0].firstLinesman,
-    mainReferee: match[0].mainReferee,
-    matchVenue: match[0].matchVenue,
-    secondLinesman: match[0].secondLinesman,
-    time: match[0].time,
+    matchID: match._id,
+    homeTeam: match.homeTeam,
+    awayTeam: match.awayTeam,
+    date: match.date,
+    firstLinesman: match.firstLinesman,
+    mainReferee: match.mainReferee,
+    matchVenue: match.matchVenue,
+    secondLinesman: match.secondLinesman,
+    time: match.time,
   };
   return matchData;
 }
@@ -49,7 +50,7 @@ export async function checkValidMatch(
   //   let firstLinesmanTemp = firstLinesman;
   //   let secondLinesmanTemp = secondLinesman;
   if (matchID !== undefined) {
-    const match = await Match.find({ _id: matchID });
+    const match = await Match.findById(matchID);
     // if (homeTeam === undefined) {
     //   homeTeamTemp = match[0].homeTeam;
     // }
@@ -59,8 +60,8 @@ export async function checkValidMatch(
     // if (matchVenue === undefined) {
     //   matchVenueTemp = match[0].matchVenue;
     // }
-    if (date === undefined) {
-      dateTemp = match[0].date;
+    if (date === undefined && match !== null) {
+      dateTemp = match.date;
     }
     // if (time === undefined) {
     //   timeTemp = match[0].time;
@@ -133,8 +134,8 @@ export async function checkValidMatch(
 }
 
 export async function deleteMatch(matchID: string): Promise<void> {
-  const match = await Match.find({ _id: matchID }).exec();
-  if (match.length === 0) {
+  const match = await Match.findById(matchID).exec();
+  if (match === null) {
     throw new CodedError(ErrorMessage.MatchNotFound, ErrorCode.MatchNotFound);
   }
   await Match.deleteOne({ _id: matchID }).catch((err) => {
@@ -178,7 +179,7 @@ export async function updateMatch(
   if (secondLinesman !== undefined) {
     newData.secondLinesman = secondLinesman;
   }
-  await Match.updateOne({ _id: matchID }, newData).catch((err) => {
+  await Match.findByIdAndUpdate(matchID, newData).catch((err) => {
     throw err;
   });
 }
@@ -193,6 +194,7 @@ export async function getAllMatchs(): Promise<MatchData[]> {
       matchID: match._id,
       homeTeam: match.homeTeam,
       awayTeam: match.awayTeam,
+      matchVenue: match.matchVenue,
       date: match.date,
       time: match.time,
       mainReferee: match.mainReferee,

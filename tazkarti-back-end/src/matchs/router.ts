@@ -48,6 +48,41 @@ const matchRoutes = express.Router();
 
 /**
  * @swagger
+ *   components:
+ *           MatchEditScheme:
+ *             type: object
+ *             properties:
+ *               matchID:
+ *                 type: string
+ *                 required: true
+ *               homeTeam:
+ *                 type: string
+ *                 required: false
+ *               awayTeam:
+ *                 type: string
+ *                 required: false
+ *               matchVenue:
+ *                 type: string
+ *                 required: false
+ *               date:
+ *                 type: string
+ *                 required: false
+ *               time:
+ *                 type: string
+ *                 required: false
+ *               mainReferee:
+ *                 type: string
+ *                 required: false
+ *               firstLinesman:
+ *                 type: string
+ *                 required: false
+ *               secondLinesman:
+ *                 type: string
+ *                 required: false
+ */
+
+/**
+ * @swagger
  *components:
  *  responses:
  *    UnauthorizedError:
@@ -160,7 +195,7 @@ matchRoutes.post('/', requireAuth, requireManager, async (req, res) => {
  *                              type: string
  *                              required: true
  *                  example:
- *                      matchID: Cairo match
+ *                      matchID: 6589f3eb83637d97c83cee28
  *      responses:
  *          200:
  *              $ref: '#/components/responses/Ok'
@@ -202,11 +237,17 @@ matchRoutes.delete('/', requireAuth, requireManager, async (req, res) => {
  *          content:
  *              application/json:
  *                  schema:
- *                     $ref: '#/components/MatchEditSchema'
+ *                     $ref: '#/components/MatchEditScheme'
  *                  example:
- *                    matchID: Cairo match
- *                    numberOfRows: 10
- *                    numberOfSeatsPerRow: 8
+ *                      matchID: 6589f3eb83637d97c83cee28
+ *                      homeTeam: Team1
+ *                      awayTeam: Team2
+ *                      matchVenue: Cairo stadium
+ *                      date: 2024-01-01
+ *                      time: 4.5
+ *                      mainReferee: mohy
+ *                      firstLinesman: bola
+ *                      secondLinesman: luka
  *      responses:
  *          200:
  *              $ref: '#/components/responses/Ok'
@@ -252,8 +293,6 @@ matchRoutes.patch('/', requireAuth, requireManager, async (req, res) => {
  *  get:
  *      summary: return the data of a match
  *      tags: [Match]
- *      security:
- *           - bearerAuth: []
  *      parameters:
  *      - in: path
  *        name: matchID
@@ -261,7 +300,7 @@ matchRoutes.patch('/', requireAuth, requireManager, async (req, res) => {
  *        type: string
  *        minimum: 1
  *        description: the name of the match
- *        default: Cairo match
+ *        default: 6589f3eb83637d97c83cee28
  *      responses:
  *          200:
  *              description: returns matchs data
@@ -270,9 +309,15 @@ matchRoutes.patch('/', requireAuth, requireManager, async (req, res) => {
  *                      schema:
  *                          $ref: '#/components/MatchSchemes'
  *                      example:
- *                        matchID: Cairo match
- *                        numberOfRows: 10
- *                        numberOfSeatsPerRow: 8
+ *                          matchID: 6589f3eb83637d97c83cee28
+ *                          homeTeam: Team1
+ *                          awayTeam: Team2
+ *                          matchVenue: Cairo stadium
+ *                          date: 2024-01-01
+ *                          time: 4.5
+ *                          mainReferee: mohy
+ *                          firstLinesman: bola
+ *                          secondLinesman: luka
  *          400:
  *              $ref: '#/components/responses/BadRequest'
  *          401:
@@ -305,9 +350,6 @@ matchRoutes.get('/:matchID', async (req, res) => {
  *  get:
  *      summary: Get data of all matchs
  *      tags: [Match]
- *      security:
- *           - bearerAuth: []
- *
  *      responses:
  *          200:
  *              description: returns matchs data
@@ -316,9 +358,15 @@ matchRoutes.get('/:matchID', async (req, res) => {
  *                      schema:
  *                          $ref: '#/components/MatchSchemes'
  *                      example:
- *                        matchID: Cairo match
- *                        numberOfRows: 10
- *                        numberOfSeatsPerRow: 8
+ *                          matchID: 6589f3eb83637d97c83cee28
+ *                          homeTeam: Team1
+ *                          awayTeam: Team2
+ *                          matchVenue: Cairo stadium
+ *                          date: 2024-01-01
+ *                          time: 4.5
+ *                          mainReferee: mohy
+ *                          firstLinesman: bola
+ *                          secondLinesman: luka
  *          401:
  *              $ref: '#/components/responses/UnauthorizedError'
  *          500:
