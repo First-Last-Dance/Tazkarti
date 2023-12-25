@@ -3,10 +3,13 @@
 import stad from "../../assets/images/stad.png";
 import ChairIcon from "@mui/icons-material/Chair";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import DropDown from "../../components/DropDown/DropDown";
+
+import useFetchFunction from "../../hooks/useFetchFunction";
+import { useAuth } from "../../contexts/Authentication";
 
 import {
   Container,
@@ -21,18 +24,36 @@ import {
 } from "./CreateStad.styled";
 import { Box } from "@mui/material";
 import TextField from "../../components/TextField/TextField";
+import { createStad } from "../../services/stad";
 
-const rows = [1, 2, 3, 4, 5];
-const cols = [1, 2, 3, 4, 5];
+const rows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+const cols = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 const CreateStad = () => {
-  const { id } = useParams();
+  // const { id } = useParams();
+
+  const [data, error, isLoading, dataFetch] = useFetchFunction();
+  const auth = useAuth();
 
   const [seats, setSeats] = useState(5);
   const [numOfSeats, setNumOfSeats] = useState(5);
   const [stadName, setStadeName] = useState("");
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    createStad(
+      dataFetch,
+      {
+        stadiumName: stadName,
+        numberOfRows: seats,
+        numberOfSeatsPerRow: numOfSeats,
+      },
+      auth
+    );
+  };
+
+  useEffect(() => {
+    // alert("Stadium created successfully");
+  }, [data]);
 
   return (
     <Container>
