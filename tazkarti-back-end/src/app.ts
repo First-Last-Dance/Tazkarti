@@ -17,24 +17,32 @@ const port = process.env.PORT || 8080;
 // app.use(cors());
 // We set the CORS origin to * so that we don't need to
 // worry about the complexities of CORS.
-app.use(
-  cors({
-    allowedHeaders: [
-      'Origin',
-      'X-Requested-With',
-      'Content-Type',
-      'Accept',
-      'X-Access-Token',
-      'Authorization',
-      'Access-Control-Allow-Origin',
-      'Access-Control-Allow-Headers',
-      'Access-Control-Allow-Methods',
-    ],
-    methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
-    preflightContinue: true,
-    origin: '*',
-  }),
-);
+// app.use(
+//   cors({
+//     allowedHeaders: [
+//       'Origin',
+//       'X-Requested-With',
+//       'Content-Type',
+//       'Accept',
+//       'X-Access-Token',
+//       'Authorization',
+//       'Access-Control-Allow-Origin',
+//       'Access-Control-Allow-Headers',
+//       'Access-Control-Allow-Methods',
+//       'Content-Language'
+//     ],
+//     methods: 'GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE',
+//     preflightContinue: true,
+//     origin: '*',
+//   }),
+// );
+
+const corsOptions = {
+  origin: '*',
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 // Swagger Docs.
 const options = {

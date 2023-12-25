@@ -30,6 +30,14 @@ const SignUp = () => {
   const auth = useAuth();
 
   const [data, error, isLoading, dataFetch] = useFetchFunction();
+  function convertToYYYYMMDD(isoDateString) {
+    const date = new Date(isoDateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
 
   const handleSubmit = () => {
     signUp(dataFetch, {
@@ -37,7 +45,7 @@ const SignUp = () => {
       password: password,
       firstName: firstName,
       lastName: lastName,
-      birthDate: date,
+      birthDate: convertToYYYYMMDD(date),
       gender: gender,
       city: city,
       email: email,
@@ -91,7 +99,11 @@ const SignUp = () => {
       </Splitter>
       <Splitter>
         <Gender value={gender} setValue={setGender} />
-        <MyDatePicker value={date} setValue={setDate} label={"Birth Date"}/>{" "}
+        <MyDatePicker
+          value={date}
+          setValue={setDate}
+          label={"Birth Date"}
+        />{" "}
       </Splitter>
       <Splitter>
         <DropDown

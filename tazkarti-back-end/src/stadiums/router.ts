@@ -90,6 +90,7 @@ const stadiumRoutes = express.Router();
  *              $ref: '#/components/responses/ServerError'
  */
 stadiumRoutes.post('/', async (req, res) => {
+  console.log('Entered');
   if (!req.body.stadiumName) {
     res.status(400).send('stadiumName is required');
   }
