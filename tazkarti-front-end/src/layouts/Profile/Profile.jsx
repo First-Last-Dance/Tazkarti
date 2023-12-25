@@ -41,6 +41,7 @@ const Profile = () => {
 
   useEffect(() => {
     getUserData(dataFetch, auth);
+    
   }, []);
 
   useEffect(() => {
@@ -122,6 +123,7 @@ const Profile = () => {
               value={date}
               setValue={setDate}
               disabled={!edit}
+              label={"Birth Date"}
             />{" "}
           </Splitter>
           <Splitter>

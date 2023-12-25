@@ -47,7 +47,7 @@ const SignUp = () => {
 
   useEffect(() => {
     if (data && data.token) {
-      auth.login({ username: userName, token: data.token });
+      auth.login({ username: userName, token: data.token, role: "fan" });
       navigate("/");
     }
   }, [data]);
@@ -91,7 +91,7 @@ const SignUp = () => {
       </Splitter>
       <Splitter>
         <Gender value={gender} setValue={setGender} />
-        <MyDatePicker value={date} setValue={setDate} />{" "}
+        <MyDatePicker value={date} setValue={setDate} label={"Birth Date"}/>{" "}
       </Splitter>
       <Splitter>
         <DropDown

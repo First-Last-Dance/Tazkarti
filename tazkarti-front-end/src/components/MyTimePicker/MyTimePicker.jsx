@@ -1,26 +1,24 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+
+
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 
-const MyDatePicker = ({ value, setValue, disabled, label }) => {
-  const handleChange = (newValue) => {
-    setValue(newValue);
-  };
-
+const MyTimePicker = ({ value, setValue, label, disabled }) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DemoContainer components={["DatePicker", "DatePicker"]}>
-        <DatePicker
+      <DemoContainer components={["TimePicker", "TimePicker"]}>
+        <TimePicker
           label={label}
           value={value}
-          onChange={handleChange}
-          disabled={disabled}
+          onChange={(newValue) => setValue(newValue)}
         />
       </DemoContainer>
     </LocalizationProvider>
   );
 };
 
-export default MyDatePicker;
+export default MyTimePicker;

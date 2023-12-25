@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -19,7 +20,8 @@ import theme from "../../theme/theme";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/Authentication";
 
-const pages = ["Matches"];
+const pagesUser = ["Matches"];
+const pagesManager = ["Matches", "Create Match", "Create Staduim"];
 const settingsLoggedIn = ["Profile", "Account", "Dashboard", "Logout"];
 const settingsLoggedInNotAdmin = ["Profile", "Account", "Logout"];
 const settingsLoggedout = ["Sign Up", "Log In"];
@@ -30,6 +32,26 @@ function NavBar() {
 
   const auth = useAuth();
   const navigate = useNavigate();
+
+  const [settings, setSettings] = useState([]);
+  const [pages, setPages] = useState(["Matches"]);
+
+  useEffect(() => {
+    if (auth.isLoggedIn()) {
+    
+      if (auth.getUserName() === "Admin") {
+        setSettings(settingsLoggedIn);
+      } else {
+        setSettings(settingsLoggedInNotAdmin);
+      }
+      if (auth.getRole() === "manager") {
+        console.log("Entered manager")
+        setPages(pagesManager);
+      }
+    } else {
+      setSettings(settingsLoggedout);
+    }
+  }, [auth]);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -50,10 +72,10 @@ function NavBar() {
     <>
       {" "}
       <AppBar
-        position="fixed"
+        position="static"
         sx={{
-          width: "100vw",
-          position: "fixed",
+          width: "100",
+          position: "static",
           margin: "0",
           left: 0,
           top: 0,
@@ -175,69 +197,32 @@ function NavBar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {auth.isLoggedIn() &&
-                  auth.getUserName() === "Admin" &&
-                  settingsLoggedIn.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography
-                        textAlign="center"
-                        onClick={() => {
-                          if (setting == "Logout") {
-                            auth.logout();
-                            navigate("/login");
-                          } else {
-                            navigate(
-                              "/" + setting.replace(" ", "").toLowerCase()
-                            );
-                          }
-                        }}
-                      >
-                        {setting}
-                      </Typography>
-                    </MenuItem>
-                  ))}
-                {auth.isLoggedIn() &&
-                  auth.getUserName() !== "Admin" &&
-                  settingsLoggedInNotAdmin.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography
-                        textAlign="center"
-                        onClick={() => {
-                          if (setting == "Logout") {
-                            auth.logout();
-                            navigate("/login");
-                          } else {
-                            navigate(
-                              "/" + setting.replace(" ", "").toLowerCase()
-                            );
-                          }
-                        }}
-                      >
-                        {setting}
-                      </Typography>
-                    </MenuItem>
-                  ))}
-                {!auth.isLoggedIn() &&
-                  settingsLoggedout.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography
-                        textAlign="center"
-                        onClick={() => {
+         
+                {settings.map((setting) => (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography
+                      textAlign="center"
+                      onClick={() => {
+                        if (setting == "Logout") {
+                          auth.logout();
+                          navigate("/login");
+                        } else {
                           navigate(
                             "/" + setting.replace(" ", "").toLowerCase()
                           );
-                        }}
-                      >
-                        {setting}
-                      </Typography>
-                    </MenuItem>
-                  ))}
+                        }
+                      }}
+                    >
+                      {setting}
+                    </Typography>
+                  </MenuItem>
+                ))}
               </Menu>
             </Box>
           </Toolbar>
         </Container>
       </AppBar>
-      <Box sx={{ height: "60px" }}></Box>
+      {/* <Box sx={{ height: "60px" }}></Box> */}
     </>
   );
 }
