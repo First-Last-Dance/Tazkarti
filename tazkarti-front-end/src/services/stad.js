@@ -6,7 +6,6 @@ const createStad = (fetchData, objectData, auth) => {
     objectData.numberOfRows !== undefined &&
     objectData.numberOfSeatsPerRow !== undefined
   ) {
-    console.log("Enteded front")
     fetchData({
       axiosInstance: axios,
       method: "post",
@@ -14,7 +13,7 @@ const createStad = (fetchData, objectData, auth) => {
       requestConfig: {
         data: objectData,
         headers: {
-        //   "Content-Language": "en-US",
+          //   "Content-Language": "en-US",
           authorization: `Bearer ${auth.getToken()}`,
         },
       },
@@ -22,4 +21,35 @@ const createStad = (fetchData, objectData, auth) => {
   }
 };
 
-export { createStad };
+const getStads = (fetchData, auth) => {
+  console.log("Enteded front");
+  fetchData({
+    axiosInstance: axios,
+    method: "get",
+    url: "/stadium",
+    requestConfig: {
+      headers: {
+        //   "Content-Language": "en-US",
+        authorization: `Bearer ${auth.getToken()}`,
+      },
+    },
+  });
+};
+
+const isStadNameAvailable = (fetchData, objectData, auth) => {
+  console.log("Enteded front");
+  fetchData({
+    axiosInstance: axios,
+    method: "get",
+    url: "/stadium/available",
+    requestConfig: {
+      params: objectData,
+      headers: {
+        //   "Content-Language": "en-US",
+        authorization: `Bearer ${auth.getToken()}`,
+      },
+    },
+  });
+};
+
+export { createStad, getStads, isStadNameAvailable };

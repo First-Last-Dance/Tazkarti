@@ -41,7 +41,6 @@ const Profile = () => {
 
   useEffect(() => {
     getUserData(dataFetch, auth);
-    
   }, []);
 
   useEffect(() => {
@@ -59,14 +58,31 @@ const Profile = () => {
   }, [data]);
 
   const handleSubmit = () => {
-    editUserData(dataFetch, auth, {
-      firstName: firstName,
-      lastName: lastName,
-      birthDate: convertToShortDate(date),
-      gender: gender,
-      city: city,
-      address: address,
-    });
+    if (
+      firstName === "" ||
+      lastName === "" ||
+      date === "" ||
+      gender === "" ||
+      city === "" ||
+      address === "" ||
+      firstName === undefined ||
+      lastName === undefined ||
+      date === undefined ||
+      gender === undefined ||
+      city === undefined ||
+      address === undefined
+    ) {
+      alert("All data are required");
+    } else {
+      editUserData(dataFetch, auth, {
+        firstName: firstName,
+        lastName: lastName,
+        birthDate: convertToShortDate(date),
+        gender: gender,
+        city: city,
+        address: address,
+      });
+    }
   };
   return (
     <Container>

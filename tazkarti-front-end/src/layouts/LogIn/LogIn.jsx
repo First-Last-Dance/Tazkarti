@@ -22,21 +22,27 @@ const LogIn = () => {
   const [data2, error2, isLoading2, dataFetch2] = useFetchFunction();
 
   const handleSubmit = () => {
-    logIn(dataFetch, {
-      userName: userName,
-      password: password,
-    });
+    if (
+      userName === "" ||
+      password === "" ||
+      userName === undefined ||
+      password === undefined
+    ) {
+      alert("All fields are required");
+    } else {
+      logIn(dataFetch, {
+        userName: userName,
+        password: password,
+      });
+    }
   };
 
   useEffect(() => {
     if (data && data.token) {
       auth.login({ username: userName, token: data.token, role: data.role });
-      navigate("/")
+      navigate("/");
     }
   }, [data]);
-
-
-
 
   return (
     <Container>

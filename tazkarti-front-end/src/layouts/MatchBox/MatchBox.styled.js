@@ -9,7 +9,10 @@ export const Container = styled(Box)(({ theme }) => ({
   backgroundColor: "#efefef",
   boxShadow: "0px 0px 7px -3px",
   borderRadius: "10px",
-  "@media screen and (max-width: 768px)": {},
+  "@media screen and (max-width: 768px)": {
+    padding: "5px",
+
+  },
 }));
 
 export const ClubBox = styled(Box)(({ theme }) => ({
@@ -18,7 +21,9 @@ export const ClubBox = styled(Box)(({ theme }) => ({
   justifyContent: "center",
   alignItems: "center",
 
-  "@media screen and (max-width: 768px)": {},
+  "@media screen and (max-width: 768px)": {
+    width: "150px",
+  },
 }));
 
 export const ClubLogo = styled(Box)(({ theme }) => ({
@@ -28,14 +33,18 @@ export const ClubLogo = styled(Box)(({ theme }) => ({
     width: "100%",
   },
 
-  "@media screen and (max-width: 768px)": {},
+  "@media screen and (max-width: 768px)": {
+    width: "40px",
+  },
 }));
 
 export const ClubName = styled(Typography)(({ theme }) => ({
   color: "black",
   fontSize: "1rem",
 
-  "@media screen and (max-width: 768px)": {},
+  "@media screen and (max-width: 768px)": {
+    fontSize: "0.8rem",
+  },
 }));
 
 export const ClubsContainer = styled(Box)(({ theme }) => ({
@@ -44,7 +53,9 @@ export const ClubsContainer = styled(Box)(({ theme }) => ({
   display: "flex",
   justifyContent: "space-between",
   alignContent: "center",
-  "@media screen and (max-width: 768px)": {},
+  "@media screen and (max-width: 768px)": {
+    width: "100%",
+  },
 }));
 
 export const ReserveButton = styled(Box)(({ theme }) => ({
@@ -59,7 +70,9 @@ export const ReserveButton = styled(Box)(({ theme }) => ({
   color: "white",
   borderRadius: "5px",
   cursor: "pointer",
-  "@media screen and (max-width: 768px)": {},
+  "@media screen and (max-width: 768px)": {
+    fontSize: "0.8rem",
+  },
 }));
 
 export const MiddleContainer = styled(Box)(({ theme }) => ({
