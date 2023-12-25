@@ -54,6 +54,18 @@ export async function isAdmin(userName: string): Promise<boolean> {
   return true;
 }
 
+export async function isManager(userName: string): Promise<boolean> {
+  const user = await User.find({ userName })
+    .select('role')
+    .catch((err) => {
+      throw err;
+    });
+  if (!(user[0].role == 'manager')) {
+    return false;
+  }
+  return true;
+}
+
 export async function authorize(userName: string): Promise<void> {
   const available = await checkAvailableUserName(userName);
   if (available) {

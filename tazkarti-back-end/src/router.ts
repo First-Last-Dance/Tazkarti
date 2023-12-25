@@ -1,6 +1,8 @@
 import express from 'express';
 import * as test from './users/service';
 import userRoutes from './users/router';
+import stadiumRoutes from './stadiums/router';
+import { requireAuth, requireManager } from './shared/authentication';
 
 const routes = express.Router();
 
@@ -18,5 +20,6 @@ routes.get('/', (req, res) => {
   res.send('Hello World! from route');
 });
 routes.use('/user', userRoutes);
+routes.use('/stadium', requireAuth, requireManager, stadiumRoutes);
 
 export default routes;

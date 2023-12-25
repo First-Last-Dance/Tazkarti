@@ -59,27 +59,27 @@ export async function signUp(
     throw new CodedError(ErrorMessage.UserAlreadyExist, ErrorCode.AlreadyExist);
   }
   if (!email || !EmailValidator.validate(email)) {
-    throw new CodedError(ErrorMessage.invalidEmail, ErrorCode.invalidParameter);
+    throw new CodedError(ErrorMessage.InvalidEmail, ErrorCode.InvalidParameter);
   }
   if (!isDateString(birthDate)) {
     throw new CodedError(
-      ErrorMessage.invalidBirthDate,
-      ErrorCode.invalidParameter,
+      ErrorMessage.InvalidBirthDate,
+      ErrorCode.InvalidParameter,
     );
   }
   if (gender !== 'male') {
     if (gender !== 'female') {
       throw new CodedError(
-        ErrorMessage.invalidGender,
-        ErrorCode.invalidParameter,
+        ErrorMessage.InvalidGender,
+        ErrorCode.InvalidParameter,
       );
     }
   }
   if (role !== 'fan') {
     if (role !== 'manager') {
       throw new CodedError(
-        ErrorMessage.invalidRole,
-        ErrorCode.invalidParameter,
+        ErrorMessage.InvalidRole,
+        ErrorCode.InvalidParameter,
       );
     }
   }
@@ -116,8 +116,8 @@ export async function signIn(userName: string, password: string) {
 
   if (!authValid) {
     throw new CodedError(
-      ErrorMessage.wrongPassword,
-      ErrorCode.authenticationError,
+      ErrorMessage.WrongPassword,
+      ErrorCode.AuthenticationError,
     );
   }
   return { jwt: generateJWT(userName), role: user.role };
@@ -161,8 +161,8 @@ export async function updateUser(
   if (birthDate !== undefined) {
     if (!isDateString(birthDate)) {
       throw new CodedError(
-        ErrorMessage.invalidBirthDate,
-        ErrorCode.invalidParameter,
+        ErrorMessage.InvalidBirthDate,
+        ErrorCode.InvalidParameter,
       );
     }
     parsedDate = new Date(birthDate);
@@ -172,8 +172,8 @@ export async function updateUser(
   if (gender !== undefined && gender !== 'male') {
     if (gender !== 'female') {
       throw new CodedError(
-        ErrorMessage.invalidGender,
-        ErrorCode.invalidParameter,
+        ErrorMessage.InvalidGender,
+        ErrorCode.InvalidParameter,
       );
     }
   }
@@ -202,8 +202,8 @@ export async function updatePassword(
 
   if (!authValid) {
     throw new CodedError(
-      ErrorMessage.wrongPassword,
-      ErrorCode.authenticationError,
+      ErrorMessage.WrongPassword,
+      ErrorCode.AuthenticationError,
     );
   }
   const generatedHash = await generatePassword(newPassword);

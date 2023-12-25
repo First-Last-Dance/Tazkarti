@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { NextFunction } from 'connect';
 import * as jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
-import { isAdmin } from '../users/service';
+import { isAdmin, isManager } from '../users/service';
 
 interface JwtPayload {
   userName: string;
@@ -37,6 +37,20 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
   );
 }
 
+export function requireManager(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  isManager(res.locals.userName)
+    .then((manager) => {
+      if (manager) {
+        return next();
+      }
+      return res.status(401).send('signed in user must be manager');
+    })
+    .catch((err) => res.status(500).send(err));
+}
 export function requireAdmin(req: Request, res: Response, next: NextFunction) {
   isAdmin(res.locals.userName)
     .then((admin) => {
