@@ -30,6 +30,7 @@ import MyTimePicker from "../../components/MyTimePicker/MyTimePicker";
 import useFetchFunction from "../../hooks/useFetchFunction";
 import { useAuth } from "../../contexts/Authentication";
 import { getStads } from "../../services/stad";
+import { createMatch } from "../../services/match";
 
 // const stads = [
 //   { stadiumName: "cairo", rows: 5, cols: 8 },
@@ -61,6 +62,7 @@ const CreateMatch = () => {
   const { id } = useParams();
 
   const [data, error, isLoading, dataFetch] = useFetchFunction();
+  const [data2, error2, isLoading2, dataFetch2] = useFetchFunction();
   const auth = useAuth();
 
   const [stads, setStads] = useState([]);
@@ -94,6 +96,15 @@ const CreateMatch = () => {
     }
   }, [stadName]);
 
+  function convertToYYYYMMDD(isoDateString) {
+    const date = new Date(isoDateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
+
   const handleSubmit = () => {
     if (
       stadName === "" ||
@@ -102,18 +113,39 @@ const CreateMatch = () => {
       referee === "" ||
       lineManOne === "" ||
       lineManTwo === "" ||
+      date === "" ||
+      time === "" ||
       stadName === undefined ||
       homeTeam === undefined ||
       awayTeam === undefined ||
       referee === undefined ||
       lineManOne === undefined ||
+      date === undefined ||
+      time === undefined ||
       lineManTwo === undefined
     ) {
       alert("All fields must be filled");
     } else {
-      console.log("done");
+      createMatch(
+        dataFetch2,
+        {
+          homeTeam: homeTeam,
+          awayTeam: awayTeam,
+          matchVenue: stadName,
+          date: convertToYYYYMMDD(date),
+          time: time,
+          mainReferee: referee,
+          firstLinesman: lineManOne,
+          secondLinesman: lineManTwo,
+        },
+        auth
+      );
     }
   };
+
+  useEffect(() => {
+    console.log("data2", data2);
+  }, [data2]);
 
   useEffect(() => {
     getStads(dataFetch, auth);
