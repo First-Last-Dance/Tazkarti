@@ -65,13 +65,13 @@ export async function getAllStadiums(): Promise<StadiumData[]> {
   const stadiums = await Stadium.find().catch((err) => {
     throw err;
   });
-  const userDataList: StadiumData[] = [];
+  const StadiumDataList: StadiumData[] = [];
   stadiums.forEach((stadium) => {
-    userDataList.push({
+    StadiumDataList.push({
       stadiumName: stadium.stadiumName,
       numberOfRows: stadium.numberOfRows,
       numberOfSeatsPerRow: stadium.numberOfSeatsPerRow,
     });
   });
-  return userDataList;
+  return StadiumDataList;
 }

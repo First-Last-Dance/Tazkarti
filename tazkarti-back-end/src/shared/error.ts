@@ -21,6 +21,15 @@ export enum ErrorMessage {
   StadiumAlreadyExist = 'Stadium already exist',
   InvalidNumberOfRows = 'Number of rows must be greater than zero',
   InvalidNumberOfSeatsPerRow = 'Number of seats per row must be greater than zero',
+  MatchNotFound = 'Match not found',
+  InvalidTeamCompensations = 'Both teams can not be the same',
+  InvalidDate = 'Invalid date',
+  HomeTeamBusy = 'Home team is busy that day',
+  AwayTeamBusy = 'Away team is busy that day',
+  matchVenueBusy = 'Match venue is busy that day',
+  mainRefereeBusy = 'Main referee is busy that day',
+  firstLinesmanBusy = 'First Linesman is busy that day',
+  secondLinesmanBusy = 'Second Linesman is busy that day',
 }
 
 // code enums
@@ -33,5 +42,7 @@ export enum ErrorCode {
   UserAlreadyAuthorized = 400,
   UserNotAuthorized = 400,
   StadiumNotFound = 400,
+  MatchNotFound = 400,
   StadiumAlreadyExist = 400,
+  Conflict = 409,
 }
