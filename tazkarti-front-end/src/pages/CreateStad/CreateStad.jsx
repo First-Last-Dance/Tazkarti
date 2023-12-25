@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-key */
 import stad from "../../assets/images/stad.png";
@@ -22,9 +23,9 @@ import {
   Header,
   MyButton,
 } from "./CreateStad.styled";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import TextField from "../../components/TextField/TextField";
-import { createStad } from "../../services/stad";
+import { createStad, isStadNameAvailable } from "../../services/stad";
 
 const rows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 const cols = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -33,27 +34,57 @@ const CreateStad = () => {
   // const { id } = useParams();
 
   const [data, error, isLoading, dataFetch] = useFetchFunction();
+  const [data2, error2, isLoading2, dataFetch2] = useFetchFunction();
   const auth = useAuth();
 
   const [seats, setSeats] = useState(5);
   const [numOfSeats, setNumOfSeats] = useState(5);
   const [stadName, setStadeName] = useState("");
 
+  const [available, setAvailable] = useState(true);
+
   const handleSubmit = () => {
-    createStad(
-      dataFetch,
-      {
-        stadiumName: stadName,
-        numberOfRows: seats,
-        numberOfSeatsPerRow: numOfSeats,
-      },
-      auth
-    );
+    if (
+      stadName === "" ||
+      stadName === undefined ||
+      seats === undefined ||
+      numOfSeats === undefined
+    ) {
+      alert("All fields are required");
+    } else {
+      if (available) {
+        createStad(
+          dataFetch,
+          {
+            stadiumName: stadName,
+            numberOfRows: seats,
+            numberOfSeatsPerRow: numOfSeats,
+          },
+          auth
+        );
+      } else {
+        alert("Change stadium name");
+      }
+    }
   };
 
   useEffect(() => {
-    // alert("Stadium created successfully");
+    if (stadName.length > 0 && !error) {
+      alert("Stadium created successfully");
+    }
   }, [data]);
+
+  useEffect(() => {
+    if (stadName !== undefined) {
+      isStadNameAvailable(dataFetch2, { stadiumName: stadName.trim() }, auth);
+    }
+  }, [stadName]);
+
+  useEffect(() => {
+    if (data2.available !== undefined) {
+      setAvailable(data2.available);
+    }
+  }, [data2]);
 
   return (
     <Container>
@@ -87,6 +118,7 @@ const CreateStad = () => {
           setValue={setStadeName}
           placeHolder={"Name"}
         />
+        {!available && <Typography>Stadium name is taken</Typography>}
         <DropDown
           value={seats}
           setValue={setSeats}

@@ -22,8 +22,8 @@ import { useAuth } from "../../contexts/Authentication";
 
 const pagesUser = ["Matches"];
 const pagesManager = ["Matches", "Create Match", "Create Staduim"];
-const settingsLoggedIn = ["Profile", "Account", "Dashboard", "Logout"];
-const settingsLoggedInNotAdmin = ["Profile", "Account", "Logout"];
+const settingsLoggedIn = ["Profile",  "Dashboard", "Logout"];
+const settingsLoggedInNotAdmin = ["Profile",  "Logout"];
 const settingsLoggedout = ["Sign Up", "Log In"];
 
 function NavBar() {

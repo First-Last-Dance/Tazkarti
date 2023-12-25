@@ -74,4 +74,20 @@ const editUserData = (fetchData, auth, objectData) => {
   });
 };
 
-export { signUp, logIn, getUserData, editUserData };
+
+const isUserNameAvailable = (fetchData, objectData) => {
+  fetchData({
+    axiosInstance: axios,
+    method: "get",
+    url: "/user/available?userName",
+    requestConfig: {
+      params: objectData,
+      headers: {
+        //   "Content-Language": "en-US",
+      
+      },
+    },
+  });
+};
+
+export { signUp, logIn, getUserData, editUserData, isUserNameAvailable };
