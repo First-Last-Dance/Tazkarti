@@ -220,3 +220,7 @@ export async function getAllauthorized(): Promise<UserData[]> {
 export async function switchRole(userName: string): Promise<void> {
   await User.switchRole(userName);
 }
+
+export async function isAvailable(userName: string): Promise<Boolean> {
+  return await User.checkAvailableUserName(userName);
+}

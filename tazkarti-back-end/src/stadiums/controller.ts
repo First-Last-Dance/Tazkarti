@@ -1,5 +1,5 @@
 import * as Stadium from './service';
-import { StadiumData } from './model';
+import stadium, { StadiumData } from './model';
 import { CodedError, ErrorCode, ErrorMessage } from '../shared/error';
 
 export async function Add(
@@ -75,4 +75,8 @@ export async function updateStadium(
 
 export async function getAllStadiums(): Promise<StadiumData[]> {
   return Stadium.getAllStadiums();
+}
+
+export async function isAvailable(stadiumName: string): Promise<Boolean> {
+  return await Stadium.checkAvailableStadiumName(stadiumName);
 }

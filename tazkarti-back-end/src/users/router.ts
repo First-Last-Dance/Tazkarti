@@ -67,6 +67,22 @@ const userRoutes = express.Router();
 /**
  * @swagger
  *   components:
+ *           AvailabilityResponse:
+ *            content:
+ *              application/json:
+ *                schema:
+ *                  type: object
+ *                  properties:
+ *                    availability:
+ *                      type: boolean
+ *                      required: true
+ *                example:
+ *                  availability: true
+ */
+/**
+/**
+ * @swagger
+ *   components:
  *           userEditSchema:
  *             type: object
  *             properties:
@@ -330,29 +346,30 @@ userRoutes.post('/signUp', async (req, res) => {
   }
   if (!req.body.role) {
     res.status(400).send('role is required');
+  } else {
+    await User.signUp(
+      req.body.userName,
+      req.body.password,
+      req.body.firstName,
+      req.body.lastName,
+      req.body.birthDate,
+      req.body.gender,
+      req.body.city,
+      req.body.email,
+      req.body.role,
+      req.body.address,
+    )
+      .then((jwt) => {
+        res.status(200).send({ auth: true, token: jwt });
+      })
+      .catch((err) => {
+        if (err instanceof CodedError) {
+          res.status(err.code).send(err.message);
+        } else {
+          res.status(500).send(err);
+        }
+      });
   }
-  await User.signUp(
-    req.body.userName,
-    req.body.password,
-    req.body.firstName,
-    req.body.lastName,
-    req.body.birthDate,
-    req.body.gender,
-    req.body.city,
-    req.body.email,
-    req.body.role,
-    req.body.address,
-  )
-    .then((jwt) => {
-      res.status(200).send({ auth: true, token: jwt });
-    })
-    .catch((err) => {
-      if (err instanceof CodedError) {
-        res.status(err.code).send(err.message);
-      } else {
-        res.status(500).send(err);
-      }
-    });
 });
 
 /**
@@ -410,20 +427,21 @@ userRoutes.post('/signIn', async (req, res) => {
   }
   if (!req.body.password) {
     res.status(400).send('Password is required');
+  } else {
+    await User.signIn(req.body.userName, req.body.password)
+      .then((result) => {
+        res
+          .status(200)
+          .send({ auth: true, token: result.jwt, role: result.role });
+      })
+      .catch((err) => {
+        if (err instanceof CodedError) {
+          res.status(err.code).send(err.message);
+        } else {
+          res.status(500).send(err);
+        }
+      });
   }
-  await User.signIn(req.body.userName, req.body.password)
-    .then((result) => {
-      res
-        .status(200)
-        .send({ auth: true, token: result.jwt, role: result.role });
-    })
-    .catch((err) => {
-      if (err instanceof CodedError) {
-        res.status(err.code).send(err.message);
-      } else {
-        res.status(500).send(err);
-      }
-    });
 });
 
 /**
@@ -458,18 +476,19 @@ userRoutes.post('/signIn', async (req, res) => {
 userRoutes.patch('/authorize', requireAuth, requireAdmin, async (req, res) => {
   if (!req.body.userName) {
     res.status(400).send('userName to be authorized is required');
+  } else {
+    await User.authorize(req.body.userName)
+      .then(() => {
+        res.status(200).send('ok');
+      })
+      .catch((err) => {
+        if (err instanceof CodedError) {
+          res.status(err.code).send(err.message);
+        } else {
+          res.status(500).send(err);
+        }
+      });
   }
-  await User.authorize(req.body.userName)
-    .then(() => {
-      res.status(200).send('ok');
-    })
-    .catch((err) => {
-      if (err instanceof CodedError) {
-        res.status(err.code).send(err.message);
-      } else {
-        res.status(500).send(err);
-      }
-    });
 });
 
 /**
@@ -504,18 +523,19 @@ userRoutes.patch('/authorize', requireAuth, requireAdmin, async (req, res) => {
 userRoutes.delete('/', requireAuth, requireAdmin, async (req, res) => {
   if (!req.body.userName) {
     res.status(400).send('userName to be deleted is required');
+  } else {
+    await User.deleteUser(req.body.userName)
+      .then(() => {
+        res.status(200).send('ok');
+      })
+      .catch((err) => {
+        if (err instanceof CodedError) {
+          res.status(err.code).send(err.message);
+        } else {
+          res.status(500).send(err);
+        }
+      });
   }
-  await User.deleteUser(req.body.userName)
-    .then(() => {
-      res.status(200).send('ok');
-    })
-    .catch((err) => {
-      if (err instanceof CodedError) {
-        res.status(err.code).send(err.message);
-      } else {
-        res.status(500).send(err);
-      }
-    });
 });
 
 /**
@@ -603,22 +623,23 @@ userRoutes.patch('/changePassword', requireAuth, async (req, res) => {
   }
   if (!req.body.newPassword) {
     res.status(400).send('New password is required');
+  } else {
+    await User.updatePassword(
+      res.locals.userName,
+      req.body.password,
+      req.body.newPassword,
+    )
+      .then(() => {
+        res.status(200).send('ok');
+      })
+      .catch((err) => {
+        if (err instanceof CodedError) {
+          res.status(err.code).send(err.message);
+        } else {
+          res.status(500).send(err);
+        }
+      });
   }
-  await User.updatePassword(
-    res.locals.userName,
-    req.body.password,
-    req.body.newPassword,
-  )
-    .then(() => {
-      res.status(200).send('ok');
-    })
-    .catch((err) => {
-      if (err instanceof CodedError) {
-        res.status(err.code).send(err.message);
-      } else {
-        res.status(500).send(err);
-      }
-    });
 });
 
 /**
@@ -689,6 +710,48 @@ userRoutes.get('/authorized', requireAuth, requireAdmin, async (req, res) => {
 
 /**
  * @swagger
+ * /user/available?userName:
+ *  get:
+ *      summary: return true if userName is available
+ *      tags: [User]
+ *      parameters:
+ *      - in: query
+ *        name: userName
+ *        required: true
+ *        type: string
+ *        minimum: 1
+ *        default: Amr49
+ *      responses:
+ *          200:
+ *              $ref: '#/components/AvailabilityResponse'
+ *          400:
+ *              $ref: '#/components/responses/BadRequest'
+ *          401:
+ *              $ref: '#/components/responses/UnauthorizedError'
+ *          500:
+ *              $ref: '#/components/responses/ServerError'
+ */
+
+userRoutes.get('/available', async (req, res) => {
+  if (!req.query.userName) {
+    res.status(400).send('userName is required');
+  } else {
+    await User.isAvailable(req.query.userName as string)
+      .then((availability) => {
+        res.status(200).send({ available: availability });
+      })
+      .catch((err) => {
+        if (err instanceof CodedError) {
+          res.status(err.code).send(err.message);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  }
+});
+
+/**
+ * @swagger
  * /user/switchRole:
  *  patch:
  *      summary: switch the role of an authorized user (only admin)
@@ -719,18 +782,19 @@ userRoutes.get('/authorized', requireAuth, requireAdmin, async (req, res) => {
 userRoutes.patch('/switchRole', requireAuth, requireAdmin, async (req, res) => {
   if (!req.body.userName) {
     res.status(400).send('userName to switch his role');
+  } else {
+    await User.switchRole(req.body.userName)
+      .then(() => {
+        res.status(200).send('ok');
+      })
+      .catch((err) => {
+        if (err instanceof CodedError) {
+          res.status(err.code).send(err.message);
+        } else {
+          res.status(500).send(err);
+        }
+      });
   }
-  await User.switchRole(req.body.userName)
-    .then(() => {
-      res.status(200).send('ok');
-    })
-    .catch((err) => {
-      if (err instanceof CodedError) {
-        res.status(err.code).send(err.message);
-      } else {
-        res.status(500).send(err);
-      }
-    });
 });
 
 export default userRoutes;

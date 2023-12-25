@@ -46,6 +46,23 @@ const stadiumRoutes = express.Router();
 
 /**
  * @swagger
+ *   components:
+ *           AvailabilityResponse:
+ *            content:
+ *              application/json:
+ *                schema:
+ *                  type: object
+ *                  properties:
+ *                    availability:
+ *                      type: boolean
+ *                      required: true
+ *                example:
+ *                  availability: true
+ */
+/**
+
+/**
+ * @swagger
  * /stadium/:
  *   post:
  *     summary: Add a new stadium
@@ -81,23 +98,24 @@ stadiumRoutes.post('/', async (req, res) => {
   }
   if (!req.body.numberOfSeatsPerRow) {
     res.status(400).send('number of seats per row is required');
+  } else {
+    await stadium
+      .Add(
+        req.body.stadiumName,
+        req.body.numberOfRows,
+        req.body.numberOfSeatsPerRow,
+      )
+      .then(() => {
+        res.status(200).send('ok');
+      })
+      .catch((err) => {
+        if (err instanceof CodedError) {
+          res.status(err.code).send(err.message);
+        } else {
+          res.status(500).send(err);
+        }
+      });
   }
-  await stadium
-    .Add(
-      req.body.stadiumName,
-      req.body.numberOfRows,
-      req.body.numberOfSeatsPerRow,
-    )
-    .then(() => {
-      res.status(200).send('ok');
-    })
-    .catch((err) => {
-      if (err instanceof CodedError) {
-        res.status(err.code).send(err.message);
-      } else {
-        res.status(500).send(err);
-      }
-    });
 });
 
 /**
@@ -132,19 +150,20 @@ stadiumRoutes.post('/', async (req, res) => {
 stadiumRoutes.delete('/', async (req, res) => {
   if (!req.body.stadiumName) {
     res.status(400).send('stadiumName to be deleted is required');
+  } else {
+    await stadium
+      .deleteStadium(req.body.stadiumName)
+      .then(() => {
+        res.status(200).send('ok');
+      })
+      .catch((err) => {
+        if (err instanceof CodedError) {
+          res.status(err.code).send(err.message);
+        } else {
+          res.status(500).send(err);
+        }
+      });
   }
-  await stadium
-    .deleteStadium(req.body.stadiumName)
-    .then(() => {
-      res.status(200).send('ok');
-    })
-    .catch((err) => {
-      if (err instanceof CodedError) {
-        res.status(err.code).send(err.message);
-      } else {
-        res.status(500).send(err);
-      }
-    });
 });
 
 /**
@@ -177,23 +196,69 @@ stadiumRoutes.delete('/', async (req, res) => {
 stadiumRoutes.patch('/', async (req, res) => {
   if (!req.body.stadiumName) {
     res.status(400).send('stadiumName to be updated is required');
+  } else {
+    await stadium
+      .updateStadium(
+        res.locals.stadiumName,
+        req.body.numberOfRows,
+        req.body.numberOfSeatsPerRow,
+      )
+      .then(() => {
+        res.status(200).send('ok');
+      })
+      .catch((err) => {
+        if (err instanceof CodedError) {
+          res.status(err.code).send(err.message);
+        } else {
+          res.status(500).send(err);
+        }
+      });
   }
-  await stadium
-    .updateStadium(
-      res.locals.stadiumName,
-      req.body.numberOfRows,
-      req.body.numberOfSeatsPerRow,
-    )
-    .then(() => {
-      res.status(200).send('ok');
-    })
-    .catch((err) => {
-      if (err instanceof CodedError) {
-        res.status(err.code).send(err.message);
-      } else {
-        res.status(500).send(err);
-      }
-    });
+});
+
+/**
+ * @swagger
+ * /stadium/available?stadiumName:
+ *  get:
+ *      summary: return true if stadiumName is available
+ *      tags: [Stadium]
+ *      security:
+ *           - bearerAuth: []
+ *      parameters:
+ *      - in: query
+ *        name: stadiumName
+ *        required: true
+ *        type: string
+ *        minimum: 1
+ *        default: Cairo stadium
+ *      responses:
+ *          200:
+ *              $ref: '#/components/AvailabilityResponse'
+ *          400:
+ *              $ref: '#/components/responses/BadRequest'
+ *          401:
+ *              $ref: '#/components/responses/UnauthorizedError'
+ *          500:
+ *              $ref: '#/components/responses/ServerError'
+ */
+
+stadiumRoutes.get('/available', async (req, res) => {
+  if (!req.query.stadiumName) {
+    res.status(400).send('stadiumName is required');
+  } else {
+    await stadium
+      .isAvailable(req.query.stadiumName as string)
+      .then((availability) => {
+        res.status(200).send({ available: availability });
+      })
+      .catch((err) => {
+        if (err instanceof CodedError) {
+          res.status(err.code).send(err.message);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  }
 });
 
 /**
