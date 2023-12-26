@@ -250,7 +250,6 @@ export async function reserve(
         if (reserveSeats[i][j] === -1) {
           seats[i][j] = '';
         } else if (reserveSeats[i][j] === 0) {
-          console.log(userName);
           seats[i][j] = userName;
         } else {
           seats[i][j] = match.seats[i][j];
