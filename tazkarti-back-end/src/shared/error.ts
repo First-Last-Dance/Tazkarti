@@ -30,6 +30,7 @@ export enum ErrorMessage {
   mainRefereeBusy = 'Main referee is busy that day',
   firstLinesmanBusy = 'First Linesman is busy that day',
   secondLinesmanBusy = 'Second Linesman is busy that day',
+  CanNotCancel = 'can not cancle reserveation',
 }
 
 // code enums
