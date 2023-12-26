@@ -165,7 +165,7 @@ const MatchReserve = () => {
             <img src={stad} alt="Stadium" />
           </Stad>
 
-          {auth.getRole === "fan" && (
+          {auth.getRole() === "fan" && (
             <MyButton onClick={handleSubmit}>Save</MyButton>
           )}
         </Container>
