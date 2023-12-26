@@ -135,6 +135,12 @@ const MatchReserve = () => {
     }
   }, [data2]);
 
+  useEffect(() => {
+    if (error2.length > 0) {
+      alert(error2);
+    }
+  }, [error2]);
+
   return (
     <>
       {isLoading && <h1>Loading</h1>}
