@@ -166,7 +166,9 @@ export async function getSeats(
   matchID: string,
   userName: string,
 ): Promise<Array<Array<number>>> {
-  return Match.getSeats(matchID, userName);
+  return Match.getSeats(matchID, userName).catch((err) => {
+    throw err;
+  });
 }
 
 export async function reserve(
@@ -174,5 +176,7 @@ export async function reserve(
   userName: string,
   reserveSeats: Array<Array<number>>,
 ) {
-  Match.reserve(matchID, userName, reserveSeats);
+  Match.reserve(matchID, userName, reserveSeats).catch((err) => {
+    throw err;
+  });
 }
