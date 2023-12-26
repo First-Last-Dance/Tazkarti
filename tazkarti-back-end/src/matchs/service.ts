@@ -234,6 +234,18 @@ export async function getSeats(
   return [];
 }
 
+function isDifferenceGreaterThanEqualThree(targetDate: string): boolean {
+  const targetDateTime = new Date(targetDate);
+  const currentDate = new Date();
+
+  const differenceInMillis = targetDateTime.getTime() - currentDate.getTime();
+  const differenceInDays = Math.ceil(
+    differenceInMillis / (1000 * 60 * 60 * 24),
+  );
+
+  return differenceInDays >= 3;
+}
+
 export async function reserve(
   matchID: string,
   userName: string,
@@ -252,7 +264,7 @@ export async function reserve(
         if (reserveSeats[i][j] === -1) {
           if (
             match.seats[i][j] === userName &&
-            Date.now() - match.date.getDate() > 3
+            isDifferenceGreaterThanEqualThree(match.date.toString())
           ) {
             seats[i][j] = '';
           } else {
