@@ -130,6 +130,9 @@ const MatchReserve = () => {
 
   useEffect(() => {
     console.log("Data2:", data2);
+    if (data2 === "Ok" && !error2) {
+      alert("Reservation successful");
+    }
   }, [data2]);
 
   return (
@@ -145,9 +148,9 @@ const MatchReserve = () => {
                   notSelected={seat === -1}
                   fromMe={seat === 0}
                   onClick={() => {
-                    if (seat === -1) {
+                    if (seat === -1 && auth.getRole() === "fan") {
                       handleReserve(row, col);
-                    } else if (seat === 0) {
+                    } else if (seat === 0 && auth.getRole() === "fan") {
                       handleCancelReserve(row, col);
                     }
                   }}
@@ -162,7 +165,9 @@ const MatchReserve = () => {
             <img src={stad} alt="Stadium" />
           </Stad>
 
-          <MyButton onClick={handleSubmit}>Save</MyButton>
+          {auth.getRole === "fan" && (
+            <MyButton onClick={handleSubmit}>Save</MyButton>
+          )}
         </Container>
       )}
     </>

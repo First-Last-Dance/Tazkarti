@@ -779,7 +779,7 @@ userRoutes.get('/available', async (req, res) => {
  *          500:
  *              $ref: '#/components/responses/ServerError'
  */
-userRoutes.patch('/switchRole', requireAuth, requireAdmin, async (req, res) => {
+userRoutes.put('/switchRole', requireAuth, requireAdmin, async (req, res) => {
   if (!req.body.userName) {
     res.status(400).send('userName to switch his role');
   } else {

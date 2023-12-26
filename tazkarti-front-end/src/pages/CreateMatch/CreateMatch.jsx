@@ -144,7 +144,10 @@ const CreateMatch = () => {
   };
 
   useEffect(() => {
-    console.log("data2", data2);
+    // console.log("data2", data2);
+    if (data2 === "ok" && !error) {
+      alert("Match created successfully");
+    }
   }, [data2]);
 
   useEffect(() => {

@@ -63,7 +63,7 @@ const removeUser = (fetchData, objectData, auth) => {
 const switchRole = (fetchData, objectData, auth) => {
   fetchData({
     axiosInstance: axios,
-    method: "patch",
+    method: "put",
     url: "/user/switchRole",
     requestConfig: {
       data: objectData,
