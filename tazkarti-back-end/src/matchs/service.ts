@@ -235,26 +235,25 @@ export async function getSeats(
   return [];
 }
 
-// export async function reserve(
-//   matchID: string,
-//   userName: string,
-//   reserveSeats: Array<Array<number>>,
-// ): Promise<Array<Array<number>>> {
-//   const match = await Match.findById(matchID);
-//   if (match !== null) {
-//     const seats = match.seats;
-//     for (let i = 0; i < match.seats.length; i++) {
-//       seats.push([...Array(match.seats[i].length).fill(-1)]);
+export async function reserve(
+  matchID: string,
+  userName: string,
+  reserveSeats: Array<Array<number>>,
+): Promise<void> {
+  const match = await Match.findById(matchID);
+  if (match !== null) {
+    const seats = match.seats;
+    for (let i = 0; i < match.seats.length; i++) {
+      seats.push([...Array(match.seats[i].length).fill(-1)]);
 
-//       for (let j = 0; j < match.seats[i].length; j++) {
-//         if (reserveSeats[i][j] === -1) {
-//           seats[i][j] = '';
-//         } else if (match.seats[i][j] !== '') {
-//           seats[i][j] = 1;
-//         }
-//       }
-//     }
-//     return seats;
-//   }
-//   return [];
-// }
+      for (let j = 0; j < match.seats[i].length; j++) {
+        if (reserveSeats[i][j] === -1) {
+          seats[i][j] = '';
+        } else if (reserveSeats[i][j] === 0) {
+          seats[i][j] = userName;
+        }
+      }
+    }
+    Match.findByIdAndUpdate(matchID, { seats: seats });
+  }
+}

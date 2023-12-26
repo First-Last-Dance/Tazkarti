@@ -168,3 +168,11 @@ export async function getSeats(
 ): Promise<Array<Array<number>>> {
   return Match.getSeats(matchID, userName);
 }
+
+export async function reserve(
+  matchID: string,
+  userName: string,
+  reserveSeats: Array<Array<number>>,
+) {
+  Match.reserve(matchID, userName, reserveSeats);
+}
