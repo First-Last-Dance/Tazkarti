@@ -256,6 +256,10 @@ export async function reserve(
         }
       }
     }
-    Match.findByIdAndUpdate(matchID, { seats: seats });
+    await Match.findByIdAndUpdate(matchID, { seats: seats })
+      .then()
+      .catch((err) => {
+        throw err;
+      });
   }
 }
