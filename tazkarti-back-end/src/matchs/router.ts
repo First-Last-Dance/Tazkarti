@@ -426,8 +426,8 @@ export const mountMatchRouter = () => {
       }
       await match
         .reserve(req.params.matchID, res.locals.userName, seats)
-        .then((seats) => {
-          res.status(200).send(seats);
+        .then(() => {
+          res.status(200).send('Ok');
         })
         .catch((err) => {
           if (err instanceof CodedError) {
