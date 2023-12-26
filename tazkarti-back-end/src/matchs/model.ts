@@ -12,6 +12,7 @@ export interface MatchData {
   firstLinesman?: string;
   secondLinesman?: string;
   matchID?: string;
+  seats?: Array<Array<string>>;
 }
 
 export interface IMatch extends mongoose.Document {
@@ -23,6 +24,7 @@ export interface IMatch extends mongoose.Document {
   mainReferee: string;
   firstLinesman: string;
   secondLinesman: string;
+  seats: Array<Array<string>>;
 }
 
 const matchSchema = new Schema<IMatch>({
@@ -56,6 +58,10 @@ const matchSchema = new Schema<IMatch>({
   },
   secondLinesman: {
     type: String,
+    required: true,
+  },
+  seats: {
+    type: [],
     required: true,
   },
 });

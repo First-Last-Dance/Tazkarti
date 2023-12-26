@@ -3,9 +3,7 @@ import * as test from './users/service';
 import userRoutes from './users/router';
 import stadiumRoutes from './stadiums/router';
 import { requireAuth, requireManager } from './shared/authentication';
-import matchRoutes from './matchs/router';
-
-const routes = express.Router();
+import { mountMatchRouter } from './matchs/router';
 
 /**
  * @swagger
@@ -16,12 +14,16 @@ const routes = express.Router();
  *       200:
  *         description: Returns a mysterious string.
  */
-routes.get('/', (req, res) => {
-  test.checkAvailableUserName('Amr');
-  res.send('Hello World! from route');
-});
-routes.use('/user', userRoutes);
-routes.use('/stadium', requireAuth, requireManager, stadiumRoutes);
-routes.use('/match', matchRoutes);
+// routes.get('/', (req, res) => {
+//   test.checkAvailableUserName('Amr');
+//   res.send('Hello World! from route');
+// });
+export const mountRouter = () => {
+  const routes = express.Router();
+  routes.use('/user', userRoutes);
+  routes.use('/stadium', requireAuth, requireManager, stadiumRoutes);
+  routes.use('/match', mountMatchRouter());
+  return routes;
+};
 
-export default routes;
+// export default routes;

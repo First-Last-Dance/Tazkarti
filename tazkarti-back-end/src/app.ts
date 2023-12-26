@@ -4,13 +4,19 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUI from 'swagger-ui-express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import routes from './router';
+import { mountRouter } from './router';
+import expressWs from 'express-ws';
 
 // Config the .env file
 dotenv.config();
 
 // Create the API
-const app = express();
+// with webSocket
+const wsInstance = expressWs(express());
+const app = wsInstance.app;
+export const wss = wsInstance.getWss();
+
+// const app = express();
 const port = process.env.PORT || 8080;
 
 // add cors
@@ -65,7 +71,7 @@ app.use('/docs', swaggerUI.serve, swaggerUI.setup(openapiSpecification));
 app.use(express.json());
 
 // Set the main router
-app.use('/', routes);
+app.use('/', mountRouter());
 
 // Connect to DB
 

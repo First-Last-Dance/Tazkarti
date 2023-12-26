@@ -161,3 +161,10 @@ export async function updateMatch(
 export async function getAllMatchs(): Promise<MatchData[]> {
   return Match.getAllMatchs();
 }
+
+export async function getSeats(
+  matchID: string,
+  userName: string,
+): Promise<Array<Array<number>>> {
+  return Match.getSeats(matchID, userName);
+}
