@@ -70,8 +70,8 @@ const AllMatches = () => {
                 id={match.matchID}
                 name1={match.homeTeam}
                 name2={match.awayTeam}
-                // stad={match.stad}
-                stad={"Cairo"}
+                stad={match.matchVenue}
+                // stad={"Cairo"}
                 date={match.time}
               />
             ))}
