@@ -415,7 +415,7 @@ export const mountMatchRouter = () => {
     }
   });
 
-  matchRoutes.post('/seats/:matchID', async (req, res) => {
+  matchRoutes.post('/seats/:matchID', requireAuth, async (req, res) => {
     if (!req.params.matchID) {
       res.status(400).send('matchID is required');
     } else {
