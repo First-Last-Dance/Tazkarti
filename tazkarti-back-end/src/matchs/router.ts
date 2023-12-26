@@ -178,7 +178,7 @@ export const mountMatchRouter = () => {
         })
         .catch((err) => {
           if (err instanceof CodedError) {
-            res.status(err.code).send(err.message);
+            res.status(err.code).send({ err: err.message });
           } else {
             res.status(500).send(err);
           }
@@ -288,7 +288,7 @@ export const mountMatchRouter = () => {
         })
         .catch((err) => {
           if (err instanceof CodedError) {
-            res.status(err.code).send(err.message);
+            res.status(err.code).send({ err: err.message });
           } else {
             res.status(500).send(err);
           }
@@ -431,7 +431,7 @@ export const mountMatchRouter = () => {
         })
         .catch((err) => {
           if (err instanceof CodedError) {
-            res.status(err.code).send(err.message);
+            res.status(err.code).send({ err: err.message });
           } else {
             res.status(500).send(err);
           }

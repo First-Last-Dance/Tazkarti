@@ -268,7 +268,7 @@ export async function reserve(
           ) {
             seats[i][j] = '';
           } else {
-            seats[i][j] = match.seats[i][j];
+            throw new CodedError(ErrorMessage.CanNotCancel, ErrorCode.Conflict);
           }
         } else if (reserveSeats[i][j] === 0) {
           seats[i][j] = userName;
