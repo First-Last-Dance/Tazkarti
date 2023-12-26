@@ -242,13 +242,17 @@ export async function reserve(
 ): Promise<void> {
   const match = await Match.findById(matchID);
   if (match !== null) {
-    const seats = match.seats;
+    const seats = [];
     for (let i = 0; i < match.seats.length; i++) {
+      seats.push([...Array(match.seats[i].length).fill(-1)]);
+
       for (let j = 0; j < match.seats[i].length; j++) {
         if (reserveSeats[i][j] === -1) {
           seats[i][j] = '';
         } else if (reserveSeats[i][j] === 0) {
           seats[i][j] = userName;
+        } else {
+          seats[i][j] = match.seats;
         }
       }
     }
