@@ -273,6 +273,7 @@ export const mountMatchRouter = () => {
     } else {
       await match
         .updateMatch(
+          req.body.matchID,
           req.body.homeTeam,
           req.body.awayTeam,
           req.body.matchVenue,
@@ -281,7 +282,6 @@ export const mountMatchRouter = () => {
           req.body.mainReferee,
           req.body.firstLinesman,
           req.body.secondLinesman,
-          req.body.matchID,
         )
         .then(() => {
           res.status(200).send('ok');
