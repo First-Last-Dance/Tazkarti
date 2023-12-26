@@ -1,5 +1,4 @@
 import { CodedError, ErrorCode, ErrorMessage } from '../shared/error';
-import stadium from '../stadiums/model';
 import Stadium from '../stadiums/model';
 import Match, { MatchData } from './model';
 
@@ -86,7 +85,7 @@ export async function checkValidMatch(
   if (homeTeam !== undefined) {
     const matches = await Match.find({ homeTeam: homeTeam });
     matches.forEach((match) => {
-      if (match.date === dateTemp) {
+      if (match.date.getDate() === dateTemp?.getDate()) {
         throw new CodedError(ErrorMessage.HomeTeamBusy, ErrorCode.Conflict);
       }
     });
@@ -94,7 +93,7 @@ export async function checkValidMatch(
   if (awayTeam !== undefined) {
     const matches = await Match.find({ awayTeam: awayTeam });
     matches.forEach((match) => {
-      if (match.date === dateTemp) {
+      if (match.date.getDate() === dateTemp?.getDate()) {
         throw new CodedError(ErrorMessage.AwayTeamBusy, ErrorCode.Conflict);
       }
     });
@@ -102,7 +101,7 @@ export async function checkValidMatch(
   if (matchVenue !== undefined) {
     const matches = await Match.find({ matchVenue: matchVenue });
     matches.forEach((match) => {
-      if (match.date === dateTemp) {
+      if (match.date.getDate() === dateTemp?.getDate()) {
         throw new CodedError(ErrorMessage.matchVenueBusy, ErrorCode.Conflict);
       }
     });
@@ -110,7 +109,7 @@ export async function checkValidMatch(
   if (mainReferee !== undefined) {
     const matches = await Match.find({ mainReferee: mainReferee });
     matches.forEach((match) => {
-      if (match.date === dateTemp) {
+      if (match.date.getDate() === dateTemp?.getDate()) {
         throw new CodedError(ErrorMessage.mainRefereeBusy, ErrorCode.Conflict);
       }
     });
@@ -118,7 +117,7 @@ export async function checkValidMatch(
   if (firstLinesman !== undefined) {
     const matches = await Match.find({ firstLinesman: firstLinesman });
     matches.forEach((match) => {
-      if (match.date === dateTemp) {
+      if (match.date.getDate() === dateTemp?.getDate()) {
         throw new CodedError(
           ErrorMessage.firstLinesmanBusy,
           ErrorCode.Conflict,
@@ -129,7 +128,7 @@ export async function checkValidMatch(
   if (secondLinesman !== undefined) {
     const matches = await Match.find({ secondLinesman: secondLinesman });
     matches.forEach((match) => {
-      if (match.date === dateTemp) {
+      if (match.date.getDate() === dateTemp?.getDate()) {
         throw new CodedError(
           ErrorMessage.secondLinesmanBusy,
           ErrorCode.Conflict,

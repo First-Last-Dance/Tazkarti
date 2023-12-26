@@ -753,7 +753,7 @@ userRoutes.get('/available', async (req, res) => {
 /**
  * @swagger
  * /user/switchRole:
- *  patch:
+ *  put:
  *      summary: switch the role of an authorized user (only admin)
  *      tags: [Admin]
  *      security:
