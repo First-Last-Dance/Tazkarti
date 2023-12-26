@@ -57,7 +57,7 @@ const getMatch = (fetchData, objectData, auth) => {
 };
 
 const EditMatchFunc = (fetchData, objectData, auth) => {
-  console.log("objectdata");
+  // console.log("objectdata");
   if (
     objectData.matchID !== undefined &&
     objectData.homeTeam !== undefined &&
@@ -71,7 +71,7 @@ const EditMatchFunc = (fetchData, objectData, auth) => {
   ) {
     fetchData({
       axiosInstance: axios,
-      method: "patch",
+      method: "put",
       url: "/match",
       requestConfig: {
         data: objectData,
