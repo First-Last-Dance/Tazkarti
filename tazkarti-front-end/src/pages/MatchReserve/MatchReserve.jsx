@@ -118,7 +118,14 @@ const MatchReserve = () => {
   }, [data]);
 
   const handleSubmit = () => {
-    reserve(dataFetch2, { reserveSeats: seats }, auth, id);
+    const cardNumber = window.prompt("Enter your 16-digit credit card number:");
+    const csv = window.prompt("Enter your 3-digit CSV number:");
+
+    if (cardNumber && cardNumber.length === 16 && csv && csv.length === 3) {
+      reserve(dataFetch2, { reserveSeats: seats }, auth, id);
+    } else {
+      window.alert("Please enter valid credit card details.");
+    }
   };
 
   useEffect(() => {
