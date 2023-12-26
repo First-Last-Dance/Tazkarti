@@ -10,9 +10,27 @@ import { useParams } from "react-router-dom";
 import { Container, Stad, Seats, Seat, MyButton } from "./MatchReserve.styled";
 import { useAuth } from "../../contexts/Authentication";
 import useFetchFunction from "../../hooks/useFetchFunction";
+import { getSeats } from "../../services/match";
 
 // import io from "socket.io-client";
-// const socket = io.connect("http://localhost:3001");
+// const socket = io.connect("ws://localhost:3001", {
+//   path: "ws://localhost:3001/match/seats",
+// });
+
+// const socket = io.connect("ws://localhost:3001", {
+//   path: "/match/seats",
+// });
+
+// socket.on("connect_error", (error) => {
+//   console.error("WebSocket connection error:", error);
+//   // Handle connection error
+// });
+
+// var WebSocketClient = require('websocket').client;
+
+// import WebSocketClient from "websocket";
+
+// var socket = new WebSocketClient();
 
 const MatchReserve = () => {
   const { id } = useParams();
@@ -68,10 +86,30 @@ const MatchReserve = () => {
     setReservedSeats([...reservedSeats, { row, col }]);
   };
 
+  // useEffect(() => {
+  //   socket.on("message", (newSeats) => {
+  //     console.log("newSeats:", newSeats);
+  //     setSeats(newSeats);
+  //   });
+  // }, [socket]);
 
   // useEffect(() => {
+  //   socket.on("connect", function (connection) {
+  //     connection.emit("");
+  //   });
+  //   console.log(socket);
+  // }, []);
 
-  // },[socket])
+  useEffect(() => {
+    setTimeout(250, function () {
+      getSeats(dataFetch, { matchID: id }, auth);
+    });
+  }, []);
+
+  useEffect(() => {
+    // setSeats(data)
+    console.log("data:", data);
+  }, [data]);
 
   const handleSubmit = () => {};
 
