@@ -255,6 +255,8 @@ export async function reserve(
             Date.now() - match.date.getDate() > 3
           ) {
             seats[i][j] = '';
+          } else {
+            seats[i][j] = match.seats[i][j];
           }
         } else if (reserveSeats[i][j] === 0) {
           seats[i][j] = userName;
