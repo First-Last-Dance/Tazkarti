@@ -237,7 +237,7 @@ export const mountMatchRouter = () => {
   /**
    * @swagger
    * /match:
-   *  patch:
+   *  put:
    *      summary: update a match
    *      tags: [Match]
    *      security:
@@ -267,7 +267,7 @@ export const mountMatchRouter = () => {
    *          500:
    *              $ref: '#/components/responses/ServerError'
    */
-  matchRoutes.patch('/', requireAuth, requireManager, async (req, res) => {
+  matchRoutes.put('/', requireAuth, requireManager, async (req, res) => {
     if (!req.body.matchID) {
       res.status(400).send('matchID to be updated is required');
     } else {

@@ -247,6 +247,9 @@ export async function reserve(
       seats.push([...Array(match.seats[i].length).fill(-1)]);
 
       for (let j = 0; j < match.seats[i].length; j++) {
+        if (match.seats[i][j] !== userName && match.seats[i][j] !== '') {
+          continue;
+        }
         if (reserveSeats[i][j] === -1) {
           seats[i][j] = '';
         } else if (reserveSeats[i][j] === 0) {
