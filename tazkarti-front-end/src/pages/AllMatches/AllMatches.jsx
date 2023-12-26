@@ -72,7 +72,7 @@ const AllMatches = () => {
                 name2={match.awayTeam}
                 stad={match.matchVenue}
                 // stad={"Cairo"}
-                date={match.time}
+                date={match.date}
               />
             ))}
           </MatchContainer>
