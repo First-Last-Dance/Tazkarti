@@ -62,7 +62,7 @@ const editUserData = (fetchData, auth, objectData) => {
   if (!auth || !auth.isLoggedIn() || !auth.getToken()) return;
   fetchData({
     axiosInstance: axios,
-    method: "patch",
+    method: "put",
     url: "/user",
     requestConfig: {
       data: objectData,
