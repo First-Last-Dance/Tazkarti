@@ -415,6 +415,30 @@ export const mountMatchRouter = () => {
     }
   });
 
+  matchRoutes.post('/seats/:matchID', async (req, res) => {
+    if (!req.params.matchID) {
+      res.status(400).send('matchID is required');
+    } else {
+      let seats = [];
+      if (!req.body.reserveSeats) {
+      } else {
+        seats = req.body.reserveSeats;
+      }
+      await match
+        .reserve(req.params.matchID, res.locals.userName, seats)
+        .then(() => {
+          res.status(200).send('Ok');
+        })
+        .catch((err) => {
+          if (err instanceof CodedError) {
+            res.status(err.code).send(err.message);
+          } else {
+            res.status(500).send(err);
+          }
+        });
+    }
+  });
+
   matchRoutes.ws('/echo', function (ws, req) {
     console.log('hi');
     ws.on('message', function (msg) {
