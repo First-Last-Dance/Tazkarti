@@ -1,4 +1,6 @@
 import { CodedError, ErrorCode, ErrorMessage } from '../shared/error';
+import stadium from '../stadiums/model';
+import Stadium from '../stadiums/model';
 import Match, { MatchData } from './model';
 
 export async function getMatch(matchID: string): Promise<MatchData> {
@@ -23,6 +25,11 @@ export async function getMatch(matchID: string): Promise<MatchData> {
 
 export async function addMatch(matchData: MatchData): Promise<boolean> {
   const match = new Match(matchData);
+  const stadium = await Stadium.find({ stadiumName: matchData.matchVenue });
+  const seats = Array<Array<string>>(stadium[0].numberOfRows).fill(
+    Array<string>(stadium[0].numberOfSeatsPerRow).fill(''),
+  );
+  match.seats = seats;
   await match.save().catch((err) => {
     throw err;
   });
@@ -203,4 +210,27 @@ export async function getAllMatchs(): Promise<MatchData[]> {
     });
   });
   return userDataList;
+}
+
+export async function getSeats(
+  matchID: string,
+  userName: string,
+): Promise<Array<Array<number>>> {
+  const match = await Match.findById(matchID);
+  if (match !== null) {
+    const seats = [];
+    for (let i = 0; i < match.seats.length; i++) {
+      seats.push([...Array(match.seats[i].length).fill(-1)]);
+
+      for (let j = 0; j < match.seats[i].length; j++) {
+        if (match.seats[i][j] === userName) {
+          seats[i][j] = 0;
+        } else if (match.seats[i][j] !== '') {
+          seats[i][j] = 1;
+        }
+      }
+    }
+    return seats;
+  }
+  return [];
 }
