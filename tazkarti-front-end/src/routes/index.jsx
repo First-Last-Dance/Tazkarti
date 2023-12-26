@@ -11,8 +11,7 @@ import RequireAuth from "../contexts/RequireAuth";
 import Admin from "../pages/Admin/Admin";
 import CreateStad from "../pages/CreateStad/CreateStad";
 import CreateMatch from "../pages/CreateMatch/CreateMatch";
-
-
+import EditMatch from "../pages/EditMatch/EditMatch";
 
 const router = createBrowserRouter([
   {
@@ -72,6 +71,14 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <CreateMatch />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: "edit-match/:id",
+        element: (
+          <RequireAuth>
+            <EditMatch />
           </RequireAuth>
         ),
       },

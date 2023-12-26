@@ -1,18 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-key */
 import stad from "../../assets/images/stad.png";
 import ChairIcon from "@mui/icons-material/Chair";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { Container, Stad, Seats, Seat, MyButton } from "./MatchReserve.styled";
 import { useAuth } from "../../contexts/Authentication";
 import useFetchFunction from "../../hooks/useFetchFunction";
 
-
-import io from "socket.io-client";
-const socket = io.connect("http://localhost:3001");
+// import io from "socket.io-client";
+// const socket = io.connect("http://localhost:3001");
 
 const MatchReserve = () => {
   const { id } = useParams();
@@ -68,39 +68,47 @@ const MatchReserve = () => {
     setReservedSeats([...reservedSeats, { row, col }]);
   };
 
-  const handleSubmit = () => {
 
-  }
+  // useEffect(() => {
+
+  // },[socket])
+
+  const handleSubmit = () => {};
 
   return (
-    <Container>
-      {seats.map((rowSeats, row) => (
-        <Seats key={row}>
-          {rowSeats.map((seat, col) => (
-            <Seat
-              key={`${row}-${col}`}
-              notSelected={seat.userName === ""}
-              fromMe={seat.userName === auth.getUserName()}
-              onClick={() => {
-                if (seat.userName === "") {
-                  handleReserve(row, col);
-                } else if (seat.userName === auth.getUserName()) {
-                  handleCancelReserve(row, col);
-                }
-              }}
-            >
-              <ChairIcon />
-            </Seat>
+    <>
+      {isLoading && <h1>Loading</h1>}
+      {!isLoading && (
+        <Container>
+          {seats.map((rowSeats, row) => (
+            <Seats key={row}>
+              {rowSeats.map((seat, col) => (
+                <Seat
+                  key={`${row}-${col}`}
+                  notSelected={seat.userName === ""}
+                  fromMe={seat.userName === auth.getUserName()}
+                  onClick={() => {
+                    if (seat.userName === "") {
+                      handleReserve(row, col);
+                    } else if (seat.userName === auth.getUserName()) {
+                      handleCancelReserve(row, col);
+                    }
+                  }}
+                >
+                  <ChairIcon />
+                </Seat>
+              ))}
+            </Seats>
           ))}
-        </Seats>
-      ))}
 
-      <Stad>
-        <img src={stad} alt="Stadium" />
-      </Stad>
+          <Stad>
+            <img src={stad} alt="Stadium" />
+          </Stad>
 
-      <MyButton onClick={handleSubmit}>Save</MyButton>
-    </Container>
+          <MyButton onClick={handleSubmit}>Save</MyButton>
+        </Container>
+      )}
+    </>
   );
 };
 
