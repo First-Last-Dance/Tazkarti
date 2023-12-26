@@ -1,13 +1,18 @@
-import express from 'express';
+import express, { json } from 'express';
 import * as match from './controller';
 import { CodedError } from '../shared/error';
 import { requireAuth, requireManager } from '../shared/authentication';
 import expressWs from 'express-ws';
 import { wss } from '../app';
 
-// const matchRoutes = express.Router();
+export interface clientDate {
+  client: any;
+  userName: string;
+  matchID: string;
+}
 export const mountMatchRouter = () => {
   const matchRoutes = express.Router() as expressWs.Router;
+  let clients: Array<clientDate> = [];
   /**
    * @swagger
    *   components:
@@ -391,6 +396,25 @@ export const mountMatchRouter = () => {
       });
   });
 
+  matchRoutes.get('/seats/:matchID', async (req, res) => {
+    if (!req.params.matchID) {
+      res.status(400).send('matchID is required');
+    } else {
+      await match
+        .getSeats(req.params.matchID, res.locals.userName)
+        .then((seats) => {
+          res.status(200).send(seats);
+        })
+        .catch((err) => {
+          if (err instanceof CodedError) {
+            res.status(err.code).send(err.message);
+          } else {
+            res.status(500).send(err);
+          }
+        });
+    }
+  });
+
   matchRoutes.ws('/echo', function (ws, req) {
     console.log('hi');
     ws.on('message', function (msg) {
@@ -400,12 +424,19 @@ export const mountMatchRouter = () => {
   });
 
   matchRoutes.ws('/seats', async function (ws, req) {
-    const test = await match.getSeats('658ab585f6bc802612ea591c', 'Admin');
-
-    ws.on('message', function (matchID) {
-      ws.send(JSON.stringify({ seats: test }));
-      wss.clients.forEach(function (client) {
-        client.send(test);
+    ws.on('message', async function (msg) {
+      const matchID = JSON.parse(JSON.stringify(msg)).matchID;
+      const userName = JSON.parse(JSON.stringify(msg)).userName;
+      clients.push({ client: ws, matchID: matchID, userName: userName });
+      const seats = await match.getSeats(matchID, 'Admin');
+      ws.send(JSON.stringify({ seats: seats }));
+      //   wss.clients.forEach(function (client) {
+      //     client.send(seats);
+      //   });
+    });
+    ws.on('close', function () {
+      clients = clients.filter((client) => {
+        client.client == ws;
       });
     });
   });
