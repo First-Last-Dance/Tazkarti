@@ -12,6 +12,7 @@ import Admin from "../pages/Admin/Admin";
 import CreateStad from "../pages/CreateStad/CreateStad";
 import CreateMatch from "../pages/CreateMatch/CreateMatch";
 import EditMatch from "../pages/EditMatch/EditMatch";
+import RequireManager from "../contexts/RequireManager";
 
 const router = createBrowserRouter([
   {
@@ -62,7 +63,9 @@ const router = createBrowserRouter([
         path: "createstaduim",
         element: (
           <RequireAuth>
-            <CreateStad />
+            <RequireManager>
+              <CreateStad />
+            </RequireManager>
           </RequireAuth>
         ),
       },
@@ -70,7 +73,9 @@ const router = createBrowserRouter([
         path: "creatematch",
         element: (
           <RequireAuth>
-            <CreateMatch />
+            <RequireManager>
+              <CreateMatch />
+            </RequireManager>
           </RequireAuth>
         ),
       },
@@ -78,7 +83,10 @@ const router = createBrowserRouter([
         path: "edit-match/:id",
         element: (
           <RequireAuth>
-            <EditMatch />
+            <RequireManager>
+              {" "}
+              <EditMatch />
+            </RequireManager>
           </RequireAuth>
         ),
       },
