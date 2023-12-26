@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 import { Container, Stad, Seats, Seat, MyButton } from "./MatchReserve.styled";
 import { useAuth } from "../../contexts/Authentication";
 import useFetchFunction from "../../hooks/useFetchFunction";
-import { getSeats } from "../../services/match";
+import { getSeats, reserve } from "../../services/match";
 
 // import io from "socket.io-client";
 // const socket = io.connect("ws://localhost:3001", {
@@ -68,24 +68,29 @@ const MatchReserve = () => {
   ]);
 
   const [reservedSeats, setReservedSeats] = useState([]);
+  // const [reservedSeats, setReservedSeats] = useState([]);
 
   const auth = useAuth();
   const [data, error, isLoading, dataFetch] = useFetchFunction();
+  const [data2, error2, isLoading2, dataFetch2] = useFetchFunction();
 
   const handleReserve = (row, col) => {
-    const updatedSeats = [...seats];
-    updatedSeats[row][col].userName = auth.getUserName();
+    let updatedSeats = [...seats];
+    updatedSeats[row][col] = 0;
     setSeats(updatedSeats);
     setReservedSeats([...reservedSeats, { row, col }]);
   };
 
   const handleCancelReserve = (row, col) => {
-    const updatedSeats = [...seats];
-    updatedSeats[row][col].userName = "";
+    let updatedSeats = [...seats];
+    updatedSeats[row][col] = -1;
     setSeats(updatedSeats);
     setReservedSeats([...reservedSeats, { row, col }]);
   };
 
+  useEffect(() => {
+    console.log("Seats:", seats);
+  }, [seats]);
   // useEffect(() => {
   //   socket.on("message", (newSeats) => {
   //     console.log("newSeats:", newSeats);
@@ -101,17 +106,24 @@ const MatchReserve = () => {
   // }, []);
 
   useEffect(() => {
-    setTimeout(250, function () {
-      getSeats(dataFetch, { matchID: id }, auth);
-    });
+    // console.log("Entered 54");
+    setTimeout(function () {
+      getSeats(dataFetch, { matchID: id.toString() }, auth);
+    }, 250);
   }, []);
 
   useEffect(() => {
-    // setSeats(data)
-    console.log("data:", data);
+    setSeats(data);
+    // console.log("data:", data);
   }, [data]);
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    reserve(dataFetch2, { reserveSeats: seats }, auth, id);
+  };
+
+  useEffect(() => {
+    console.log("Data2:", data2);
+  }, [data2]);
 
   return (
     <>
@@ -123,12 +135,12 @@ const MatchReserve = () => {
               {rowSeats.map((seat, col) => (
                 <Seat
                   key={`${row}-${col}`}
-                  notSelected={seat.userName === ""}
-                  fromMe={seat.userName === auth.getUserName()}
+                  notSelected={seat === -1}
+                  fromMe={seat === 0}
                   onClick={() => {
-                    if (seat.userName === "") {
+                    if (seat === -1) {
                       handleReserve(row, col);
-                    } else if (seat.userName === auth.getUserName()) {
+                    } else if (seat === 0) {
                       handleCancelReserve(row, col);
                     }
                   }}
