@@ -109,7 +109,7 @@ const MatchReserve = () => {
     // console.log("Entered 54");
     setTimeout(function () {
       getSeats(dataFetch, { matchID: id.toString() }, auth);
-    }, 250);
+    }, 1);
   }, []);
 
   useEffect(() => {
