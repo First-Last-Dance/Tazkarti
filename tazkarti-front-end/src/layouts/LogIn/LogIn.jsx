@@ -41,8 +41,17 @@ const LogIn = () => {
     if (data && data.token) {
       auth.login({ username: userName, token: data.token, role: data.role });
       navigate("/");
+    } else if (data === "Wrong password") {
+      alert("Wrong password");
     }
+    // console.log(data);
   }, [data]);
+
+  useEffect(() => {
+    if (error === "Request failed with status code 401") {
+      alert("Wrong data");
+    }
+  }, [error]);
 
   return (
     <Container>
