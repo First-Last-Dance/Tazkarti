@@ -102,13 +102,33 @@ const deleteMatch = (fetchData, objectData, auth) => {
 };
 
 const getSeats = (fetchData, objectData, auth) => {
+  // console.log("matchid:", objectData.matchID);
   if (objectData.matchID !== undefined) {
     fetchData({
       axiosInstance: axios,
       method: "get",
-      url: "/match/seats",
+      url: `/match/seats/${objectData.matchID}`,
       requestConfig: {
-        params: objectData,
+        // params: objectData,
+        headers: {
+          //   "Content-Language": "en-US",
+          authorization: `Bearer ${auth.getToken()}`,
+        },
+      },
+    });
+  }
+};
+
+const reserve = (fetchData, objectData, auth, matchID) => {
+  // console.log("matchid:", objectData.matchID);
+  if (objectData.reserveSeats !== undefined) {
+    fetchData({
+      axiosInstance: axios,
+      method: "post",
+      url: `/match/seats/${matchID}`,
+      requestConfig: {
+        // params: objectData,
+        data: objectData,
         headers: {
           //   "Content-Language": "en-US",
           authorization: `Bearer ${auth.getToken()}`,
@@ -125,4 +145,5 @@ export {
   EditMatchFunc,
   deleteMatch,
   getSeats,
+  reserve,
 };
