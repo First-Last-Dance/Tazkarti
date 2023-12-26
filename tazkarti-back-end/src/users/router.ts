@@ -447,7 +447,7 @@ userRoutes.post('/signIn', async (req, res) => {
 /**
  * @swagger
  * /user/authorize:
- *  patch:
+ *  put:
  *      summary: authorize a user (only admin)
  *      tags: [Admin]
  *      security:
@@ -473,7 +473,7 @@ userRoutes.post('/signIn', async (req, res) => {
  *          500:
  *              $ref: '#/components/responses/ServerError'
  */
-userRoutes.patch('/authorize', requireAuth, requireAdmin, async (req, res) => {
+userRoutes.put('/authorize', requireAuth, requireAdmin, async (req, res) => {
   if (!req.body.userName) {
     res.status(400).send('userName to be authorized is required');
   } else {
@@ -541,7 +541,7 @@ userRoutes.delete('/', requireAuth, requireAdmin, async (req, res) => {
 /**
  * @swagger
  * /user:
- *  patch:
+ *  put:
  *      summary: update a user
  *      tags: [User]
  *      security:
@@ -568,7 +568,7 @@ userRoutes.delete('/', requireAuth, requireAdmin, async (req, res) => {
  *          500:
  *              $ref: '#/components/responses/ServerError'
  */
-userRoutes.patch('/', requireAuth, async (req, res) => {
+userRoutes.put('/', requireAuth, async (req, res) => {
   await User.updateUser(
     res.locals.userName,
     req.body.firstName,
@@ -593,7 +593,7 @@ userRoutes.patch('/', requireAuth, async (req, res) => {
 /**
  * @swagger
  * /user/changePassword:
- *  patch:
+ *  put:
  *      summary: change a user's password
  *      tags: [User]
  *      security:
@@ -617,7 +617,7 @@ userRoutes.patch('/', requireAuth, async (req, res) => {
  *              $ref: '#/components/responses/ServerError'
  */
 
-userRoutes.patch('/changePassword', requireAuth, async (req, res) => {
+userRoutes.put('/changePassword', requireAuth, async (req, res) => {
   if (!req.body.password) {
     res.status(400).send('Password is required');
   }

@@ -147,12 +147,24 @@ const CreateMatch = () => {
     // console.log("data2", data2);
     if (data2 === "ok" && !error) {
       alert("Match created successfully");
-    }
+    } 
+    // else if (data2) {
+    //   if (data2.length > 0) {
+    //     alert(data2.toString());
+    //   }
+    // }
   }, [data2]);
 
   useEffect(() => {
     getStads(dataFetch, auth);
   }, []);
+
+  useEffect(() => {
+    console.log(error2)
+    if (error2 === "Request failed with status code 409") {
+      alert("Staduim is busy this day");
+    }
+  }, [error2]);
 
   return (
     <>
