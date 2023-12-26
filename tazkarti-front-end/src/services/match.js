@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import axios from "../API/axios";
 
 const createMatch = (fetchData, objectData, auth) => {
@@ -100,4 +101,28 @@ const deleteMatch = (fetchData, objectData, auth) => {
   }
 };
 
-export { createMatch, getAllMatches, getMatch, EditMatchFunc, deleteMatch };
+const getSeats = (fetchData, objectData, auth) => {
+  if (objectData.matchID !== undefined) {
+    fetchData({
+      axiosInstance: axios,
+      method: "get",
+      url: "/match/seats",
+      requestConfig: {
+        params: objectData,
+        headers: {
+          //   "Content-Language": "en-US",
+          authorization: `Bearer ${auth.getToken()}`,
+        },
+      },
+    });
+  }
+};
+
+export {
+  createMatch,
+  getAllMatches,
+  getMatch,
+  EditMatchFunc,
+  deleteMatch,
+  getSeats,
+};

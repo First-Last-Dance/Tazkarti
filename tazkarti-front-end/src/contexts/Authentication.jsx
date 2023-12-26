@@ -69,7 +69,7 @@ const AuthProvider = ({ children }) => {
   // Is user logged in?
   const isLoggedIn = () => {
     if (user !== "undefined") {
-      console.log("Entered")
+      // console.log("Entered")
       return user !== undefined;
     } else {
       return false;
